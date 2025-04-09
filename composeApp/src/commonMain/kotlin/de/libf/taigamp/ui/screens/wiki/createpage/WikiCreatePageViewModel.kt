@@ -7,10 +7,12 @@ import de.libf.taigamp.domain.repositories.IWikiRepository
 import de.libf.taigamp.ui.utils.MutableResultFlow
 import de.libf.taigamp.ui.utils.loadOrError
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class WikiCreatePageViewModel(
-    private val wikiRepository: IWikiRepository
-) : ViewModel() {
+class WikiCreatePageViewModel() : ViewModel(), KoinComponent {
+    private val wikiRepository: IWikiRepository by inject()
+
     val creationResult = MutableResultFlow<WikiPage>()
 
     fun createWikiPage(title: String, content: String) = viewModelScope.launch {

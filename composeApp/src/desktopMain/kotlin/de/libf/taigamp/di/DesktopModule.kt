@@ -16,6 +16,9 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
@@ -29,6 +32,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okio.Path.Companion.toPath
 import org.koin.dsl.module
+import io.github.aakira.napier.Napier
 
 val platformModule = module {
     single<DataStore<Preferences>> {
@@ -39,6 +43,15 @@ val platformModule = module {
 
     single<HttpClient> {
         HttpClient(CIO) {
+            install(Logging) {
+                logger = object: Logger {
+                    override fun log(message: String) {
+                        Napier.v("HTTP Client", null, message)
+                    }
+                }
+                level = LogLevel.HEADERS
+            }
+
             install(ContentNegotiation) {
                 json(
                     Json {

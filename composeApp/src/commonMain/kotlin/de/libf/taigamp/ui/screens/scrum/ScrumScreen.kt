@@ -1,28 +1,22 @@
 package de.libf.taigamp.ui.screens.scrum
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.*
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.items
+import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
-import com.google.accompanist.insets.navigationBarsHeight
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.rememberPagerState
 import de.libf.taigamp.ui.theme.TaigaMobileTheme
-import de.libf.taigamp.R
 import de.libf.taigamp.domain.entities.Sprint
 import de.libf.taigamp.domain.entities.CommonTask
 import de.libf.taigamp.domain.entities.CommonTaskType
@@ -43,20 +37,28 @@ import de.libf.taigamp.ui.screens.main.Routes
 import de.libf.taigamp.ui.theme.commonVerticalPadding
 import de.libf.taigamp.ui.theme.mainHorizontalScreenPadding
 import de.libf.taigamp.ui.utils.*
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.format
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.backlog
+import taigamultiplatform.composeapp.generated.resources.closed
 import taigamultiplatform.composeapp.generated.resources.common_error_message
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-
+import taigamultiplatform.composeapp.generated.resources.hide_closed_sprints
+import taigamultiplatform.composeapp.generated.resources.show_closed_sprints
+import taigamultiplatform.composeapp.generated.resources.sprint_dates_template
+import taigamultiplatform.composeapp.generated.resources.sprints_title
+import taigamultiplatform.composeapp.generated.resources.stories_count_template
+import taigamultiplatform.composeapp.generated.resources.taskboard
 
 @Composable
 fun ScrumScreen(
     navController: NavController,
     showMessage: (message: StringResource) -> Unit = {},
 ) {
-    val viewModel: ScrumViewModel = viewModel()
+    val viewModel: ScrumViewModel = koinViewModel()
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }
@@ -113,7 +115,6 @@ fun ScrumScreen(
     )
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ScrumScreenContent(
     projectName: String,
@@ -133,7 +134,7 @@ fun ScrumScreenContent(
     modifier = Modifier.fillMaxSize(),
     horizontalAlignment = Alignment.Start
 ) {
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { Tabs.values().size }
     var isCreateSprintDialogVisible by remember { mutableStateOf(false) }
 
     ClickableAppBar(
@@ -186,9 +187,9 @@ fun ScrumScreenContent(
 
 }
 
-private enum class Tabs(@StringRes override val titleId: Int) : Tab {
-    Backlog(R.string.backlog),
-    Sprints(R.string.sprints_title)
+private enum class Tabs(override val titleId: StringResource) : Tab {
+    Backlog(Res.string.backlog),
+    Sprints(Res.string.sprints_title)
 }
 
 @Composable
@@ -231,13 +232,20 @@ private fun SprintsTabContent(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        items(openSprints, key = { it.id }) {
+        items(openSprints.itemSnapshotList.items, key = { it.id }) {
             if (it == null) return@items
             SprintItem(
                 sprint = it,
                 navigateToBoard = navigateToBoard
             )
         }
+//        items(openSprints, key = { it.id }) {
+//            if (it == null) return@items
+//            SprintItem(
+//                sprint = it,
+//                navigateToBoard = navigateToBoard
+//            )
+//        }
 
         item {
             if (openSprints.loadState.refresh is LoadState.Loading || openSprints.loadState.append is LoadState.Loading) {
@@ -247,12 +255,19 @@ private fun SprintsTabContent(
 
         item {
             FilledTonalButton(onClick = { isClosedSprintsVisible = !isClosedSprintsVisible }) {
-                Text(stringResource(if (isClosedSprintsVisible) R.string.hide_closed_sprints else R.string.show_closed_sprints))
+                Text(stringResource(if (isClosedSprintsVisible) Res.string.hide_closed_sprints else Res.string.show_closed_sprints))
             }
         }
 
         if (isClosedSprintsVisible) {
-            items(closedSprints, key = { it.id }) {
+//            items(closedSprints, key = { it.id }) {
+//                if (it == null) return@items
+//                SprintItem(
+//                    sprint = it,
+//                    navigateToBoard = navigateToBoard
+//                )
+//            }
+            items(closedSprints.itemSnapshotList.items, key = { it.id }) {
                 if (it == null) return@items
                 SprintItem(
                     sprint = it,
@@ -282,7 +297,7 @@ private fun SprintItem(
     sprint: Sprint,
     navigateToBoard: (Sprint) -> Unit = {}
 ) = ContainerBox {
-    val dateFormatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
+    val dateFormatter = remember { LocalDate.Formats.ISO }
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -296,7 +311,7 @@ private fun SprintItem(
             )
 
             Text(
-                stringResource(R.string.sprint_dates_template).format(
+                stringResource(Res.string.sprint_dates_template,
                     sprint.start.format(dateFormatter),
                     sprint.end.format(dateFormatter)
                 )
@@ -304,7 +319,7 @@ private fun SprintItem(
 
             Row {
                 Text(
-                    text = stringResource(R.string.stories_count_template).format(sprint.storiesCount),
+                    text = stringResource(Res.string.stories_count_template, sprint.storiesCount),
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -313,7 +328,7 @@ private fun SprintItem(
 
                 if (sprint.isClosed) {
                     Text(
-                        text = stringResource(R.string.closed),
+                        text = stringResource(Res.string.closed),
                         color = MaterialTheme.colorScheme.outline,
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -322,8 +337,10 @@ private fun SprintItem(
         }
 
         buttonColors().let {
-            val containerColor by it.containerColor(!sprint.isClosed)
-            val contentColor by it.contentColor(!sprint.isClosed)
+            val containerColor = if (!sprint.isClosed) it.containerColor else it.disabledContainerColor
+            val contentColor = if (!sprint.isClosed) it.contentColor else it.disabledContentColor
+//            val containerColor = it.containerColor(!sprint.isClosed)
+//            val contentColor = it.contentColor(!sprint.isClosed)
 
             Button(
                 onClick = { navigateToBoard(sprint) },
@@ -333,13 +350,13 @@ private fun SprintItem(
                     contentColor = contentColor
                 )
             ) {
-                Text(stringResource(R.string.taskboard))
+                Text(stringResource(Res.string.taskboard))
             }
         }
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun SprintPreview() = TaigaMobileTheme {
     SprintItem(
@@ -355,7 +372,7 @@ fun SprintPreview() = TaigaMobileTheme {
     )
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun ScrumScreenPreview() = TaigaMobileTheme {
     ScrumScreenContent("Lol")

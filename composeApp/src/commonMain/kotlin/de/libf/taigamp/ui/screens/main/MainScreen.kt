@@ -34,7 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -72,6 +72,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import taigamultiplatform.composeapp.generated.resources.Res
 import taigamultiplatform.composeapp.generated.resources.dashboard_short
 import taigamultiplatform.composeapp.generated.resources.epics
@@ -100,7 +101,7 @@ fun MainScreen(
     val navController = rememberNavController()
 //    val systemUiController = rememberSystemUiController()
 
-    val viewModel: MainViewModel = viewModel()
+    val viewModel: MainViewModel = koinViewModel()
     val theme by viewModel.theme.collectAsState(ThemeSetting.System)
 
     val darkTheme = when (theme) {

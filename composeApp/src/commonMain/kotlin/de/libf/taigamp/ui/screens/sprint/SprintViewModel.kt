@@ -20,14 +20,16 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import taigamultiplatform.composeapp.generated.resources.Res
 import taigamultiplatform.composeapp.generated.resources.permission_error
 
-class SprintViewModel(
-    private val tasksRepository: ITasksRepository,
-    private val sprintsRepository: ISprintsRepository,
-    private val session: Session
-) : ViewModel() {
+class SprintViewModel() : ViewModel(), KoinComponent {
+    private val tasksRepository: ITasksRepository by inject()
+    private val sprintsRepository: ISprintsRepository by inject()
+    private val session: Session by inject()
+
     private var sprintId: Long = -1
 
     val sprint = MutableResultFlow<Sprint>()

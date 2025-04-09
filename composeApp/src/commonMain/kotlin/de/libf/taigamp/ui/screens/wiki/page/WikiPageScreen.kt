@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.DropdownMenu
@@ -14,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,15 +25,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
-import com.google.accompanist.insets.imePadding
-import de.libf.taigamp.R
 import de.libf.taigamp.domain.entities.Attachment
 import de.libf.taigamp.domain.entities.User
 import de.libf.taigamp.ui.components.appbars.AppBarWithBackButton
@@ -47,11 +44,22 @@ import de.libf.taigamp.ui.theme.mainHorizontalScreenPadding
 import de.libf.taigamp.ui.utils.LoadingResult
 import de.libf.taigamp.ui.utils.SuccessResult
 import de.libf.taigamp.ui.utils.navigateToProfileScreen
+import de.libf.taigamp.ui.utils.now
 import de.libf.taigamp.ui.utils.subscribeOnError
-import de.libf.taigamp.ui.utils.surfaceColorAtElevation
+import io.ktor.utils.io.ByteReadChannel
+import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.StringResource
-import java.io.InputStream
-import java.time.LocalDateTime
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.delete
+import taigamultiplatform.composeapp.generated.resources.delete_wiki_text
+import taigamultiplatform.composeapp.generated.resources.delete_wiki_title
+import taigamultiplatform.composeapp.generated.resources.edit
+import taigamultiplatform.composeapp.generated.resources.ic_delete
+import taigamultiplatform.composeapp.generated.resources.ic_options
+import taigamultiplatform.composeapp.generated.resources.last_modification
 
 @Composable
 fun WikiPageScreen(
@@ -59,7 +67,7 @@ fun WikiPageScreen(
     navController: NavController,
     showMessage: (StringResource) -> Unit = {},
 ) {
-    val viewModel: WikiPageViewModel = viewModel()
+    val viewModel: WikiPageViewModel = koinViewModel()
 
     val page by viewModel.page.collectAsState()
     page.subscribeOnError(showMessage)
@@ -125,7 +133,7 @@ fun WikiPageScreenContent(
     editWikiPage: (content: String) -> Unit = { _ -> },
     deleteWikiPage: () -> Unit = {},
     onUserItemClick: (userId: Long) -> Unit = { _ -> },
-    editAttachments: EditAction<Pair<String, InputStream>, Attachment> = EditAction(),
+    editAttachments: EditAction<Pair<String, ByteReadChannel>, Attachment> = EditAction(),
 ) = Box(
     modifier = Modifier.fillMaxSize()
 ) {
@@ -173,7 +181,7 @@ fun WikiPageScreenContent(
             // last modification
             item {
                 Text(
-                    text = stringResource(R.string.last_modification),
+                    text = stringResource(Res.string.last_modification),
                     style = MaterialTheme.typography.titleMedium
                 )
 
@@ -212,7 +220,7 @@ fun WikiPageScreenContent(
 
     if (isEditPageVisible) {
         Editor(
-            toolbarText = stringResource(R.string.edit),
+            toolbarText = stringResource(Res.string.edit),
             title = pageName,
             description = content,
             showTitle = false,
@@ -247,7 +255,7 @@ fun WikiAppBar(
         actions = {
             IconButton(onClick = { isMenuExpanded = true }) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_options),
+                    painter = painterResource(Res.drawable.ic_options),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -256,14 +264,14 @@ fun WikiAppBar(
             var isDeleteAlertVisible by remember { mutableStateOf(false) }
             if (isDeleteAlertVisible) {
                 ConfirmActionDialog(
-                    title = stringResource(R.string.delete_wiki_title),
-                    text = stringResource(R.string.delete_wiki_text),
+                    title = stringResource(Res.string.delete_wiki_title),
+                    text = stringResource(Res.string.delete_wiki_text),
                     onConfirm = {
                         isDeleteAlertVisible = false
                         deleteWikiPage()
                     },
                     onDismiss = { isDeleteAlertVisible = false },
-                    iconId = R.drawable.ic_delete
+                    iconId = Res.drawable.ic_delete
                 )
             }
             DropdownMenu(
@@ -282,7 +290,7 @@ fun WikiAppBar(
                     },
                     text = {
                         Text(
-                            text = stringResource(R.string.edit),
+                            text = stringResource(Res.string.edit),
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -296,7 +304,7 @@ fun WikiAppBar(
                     },
                     text = {
                         Text(
-                            text = stringResource(R.string.delete),
+                            text = stringResource(Res.string.delete),
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }

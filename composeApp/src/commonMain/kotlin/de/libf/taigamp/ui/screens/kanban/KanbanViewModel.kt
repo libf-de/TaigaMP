@@ -13,12 +13,14 @@ import de.libf.taigamp.ui.utils.loadOrError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class KanbanViewModel(
-    private val tasksRepository: ITasksRepository,
-    private val usersRepository: IUsersRepository,
-    private val session: Session
-) : ViewModel() {
+class KanbanViewModel() : ViewModel(), KoinComponent {
+    private val tasksRepository: ITasksRepository by inject()
+    private val usersRepository: IUsersRepository by inject()
+    private val session: Session by inject()
+
     val projectName by lazy { session.currentProjectName }
 
     val statuses = MutableResultFlow<List<Status>>()

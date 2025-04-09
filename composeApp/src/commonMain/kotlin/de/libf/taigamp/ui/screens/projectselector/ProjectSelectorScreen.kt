@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
@@ -38,7 +38,7 @@ fun ProjectSelectorScreen(
     navController: NavController,
     showMessage: (StringResource) -> Unit = {},
 ) {
-    val viewModel: ProjectSelectorViewModel = viewModel()
+    val viewModel: ProjectSelectorViewModel = koinViewModel()
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }

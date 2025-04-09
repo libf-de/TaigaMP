@@ -7,7 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import de.libf.taigamp.domain.entities.Sprint
 import de.libf.taigamp.domain.entities.Status
@@ -45,7 +45,7 @@ fun SprintScreen(
     sprintId: Long,
     showMessage: (StringResource) -> Unit = {},
 ) {
-    val viewModel: SprintViewModel = viewModel()
+    val viewModel: SprintViewModel = koinViewModel()
     LaunchedEffect(Unit) {
         viewModel.onOpen(sprintId)
     }

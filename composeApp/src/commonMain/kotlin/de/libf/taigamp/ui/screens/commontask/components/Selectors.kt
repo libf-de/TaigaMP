@@ -6,9 +6,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import de.libf.taigamp.R
 import de.libf.taigamp.domain.entities.*
 import de.libf.taigamp.ui.components.containers.ContainerBox
 import de.libf.taigamp.ui.components.lists.UserItem
@@ -18,12 +16,23 @@ import de.libf.taigamp.ui.screens.commontask.CommonTaskViewModel
 import de.libf.taigamp.ui.screens.commontask.EditAction
 import de.libf.taigamp.ui.screens.commontask.SimpleEditAction
 import de.libf.taigamp.ui.utils.toColor
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.format
+import org.jetbrains.compose.resources.stringResource
 import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.choose_priority
 import taigamultiplatform.composeapp.generated.resources.choose_severity
+import taigamultiplatform.composeapp.generated.resources.choose_sprint
 import taigamultiplatform.composeapp.generated.resources.choose_status
+import taigamultiplatform.composeapp.generated.resources.choose_swimlane
 import taigamultiplatform.composeapp.generated.resources.choose_type
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
+import taigamultiplatform.composeapp.generated.resources.closed_sprint_name_template
+import taigamultiplatform.composeapp.generated.resources.move_to_backlog
+import taigamultiplatform.composeapp.generated.resources.search_epics
+import taigamultiplatform.composeapp.generated.resources.search_members
+import taigamultiplatform.composeapp.generated.resources.sprint_dates_template
+import taigamultiplatform.composeapp.generated.resources.unclassifed
 
 /**
  * Bunch of common selectors
@@ -227,7 +236,7 @@ private fun SprintItem(
     verticalPadding = 16.dp,
     onClick = onClick
 ) {
-    val dateFormatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
+    val dateFormatter = remember { LocalDate.Formats.ISO }
 
     sprint.takeIf { it != CommonTaskViewModel.SPRINT_HEADER }?.also {
         Surface(
@@ -236,14 +245,14 @@ private fun SprintItem(
             Column {
                 Text(
                     if (it.isClosed) {
-                        stringResource(Res.string.closed_sprint_name_template).format(it.name)
+                        stringResource(Res.string.closed_sprint_name_template, it.name)
                     } else {
                         it.name
                     }
                 )
 
                 Text(
-                    text = stringResource(Res.string.sprint_dates_template).format(
+                    text = stringResource(Res.string.sprint_dates_template,
                         it.start.format(dateFormatter),
                         it.end.format(dateFormatter)
                     ),

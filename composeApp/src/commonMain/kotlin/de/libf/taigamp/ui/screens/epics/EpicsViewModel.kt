@@ -19,11 +19,13 @@ import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class EpicsViewModel(
-    private val session: Session,
-    private val tasksRepository: ITasksRepository
-) : ViewModel() {
+class EpicsViewModel() : ViewModel(), KoinComponent {
+    private val session: Session by inject()
+    private val tasksRepository: ITasksRepository by inject()
+
     val projectName by lazy { session.currentProjectName }
 
     private var shouldReload = true

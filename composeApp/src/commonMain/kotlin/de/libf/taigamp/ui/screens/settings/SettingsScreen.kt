@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import de.libf.taigamp.state.ThemeSetting
@@ -61,7 +61,7 @@ fun SettingsScreen(
     navController: NavController,
     showMessage: (StringResource) -> Unit = {}
 ) {
-    val viewModel: SettingsViewModel = viewModel()
+    val viewModel: SettingsViewModel = koinViewModel()
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }

@@ -5,6 +5,8 @@ import de.libf.taigamp.di.dataModule
 import de.libf.taigamp.di.platformModule
 import de.libf.taigamp.di.repoModule
 import de.libf.taigamp.di.viewModelModule
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -18,6 +20,8 @@ class TaigaApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Napier.base(DebugAntilog())
 
         startKoin {
             androidContext(this@TaigaApp)

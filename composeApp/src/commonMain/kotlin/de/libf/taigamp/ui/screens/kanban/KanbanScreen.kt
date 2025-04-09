@@ -9,7 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import de.libf.taigamp.domain.entities.*
 import de.libf.taigamp.ui.utils.LoadingResult
@@ -28,7 +28,7 @@ fun KanbanScreen(
     navController: NavController,
     showMessage: (message: StringResource) -> Unit = {}
 ) {
-    val viewModel: KanbanViewModel = viewModel()
+    val viewModel: KanbanViewModel = koinViewModel()
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }

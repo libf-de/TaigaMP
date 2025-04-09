@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import de.libf.taigamp.domain.entities.TeamMember
@@ -43,7 +43,7 @@ fun TeamScreen(
     navController: NavController,
     showMessage: (StringResource) -> Unit = {},
 ) {
-    val viewModel: TeamViewModel = viewModel()
+    val viewModel: TeamViewModel = koinViewModel()
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }

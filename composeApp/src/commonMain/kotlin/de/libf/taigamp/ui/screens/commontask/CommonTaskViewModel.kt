@@ -9,8 +9,6 @@ import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.insertHeaderItem
 
 import de.libf.taigamp.state.Session
-import de.libf.taigamp.TaigaApp
-import de.libf.taigamp.dagger.AppComponent
 import de.libf.taigamp.domain.entities.*
 import de.libf.taigamp.domain.paging.CommonPagingSource
 import de.libf.taigamp.domain.repositories.ISprintsRepository
@@ -23,15 +21,16 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.datetime.LocalDate
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import taigamultiplatform.composeapp.generated.resources.Res
 import taigamultiplatform.composeapp.generated.resources.permission_error
 
-class CommonTaskViewModel(
-    private val session: Session,
-    private val tasksRepository: ITasksRepository,
-    private val usersRepository: IUsersRepository,
-    private val sprintsRepository: ISprintsRepository
-) : ViewModel() {
+class CommonTaskViewModel() : ViewModel(), KoinComponent {
+    private val session: Session by inject()
+    private val tasksRepository: ITasksRepository by inject()
+    private val usersRepository: IUsersRepository by inject()
+    private val sprintsRepository: ISprintsRepository by inject()
+
     companion object {
         val SPRINT_HEADER = Sprint(-1, "HEADER", -1, LOCALDATE_MIN, LOCALDATE_MIN, 0, false)
         val SWIMLANE_HEADER = Swimlane(-1, "HEADER", -1)

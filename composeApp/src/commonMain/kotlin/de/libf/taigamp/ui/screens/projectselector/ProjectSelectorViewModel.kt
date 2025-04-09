@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import de.libf.taigamp.state.Session
-import de.libf.taigamp.TaigaApp
-import de.libf.taigamp.dagger.AppComponent
 import de.libf.taigamp.domain.entities.Project
 import de.libf.taigamp.domain.paging.CommonPagingSource
 import de.libf.taigamp.domain.repositories.IProjectsRepository
@@ -15,11 +13,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class ProjectSelectorViewModel(
-    private val projectsRepository: IProjectsRepository,
-    private val session: Session
-) : ViewModel() {
+class ProjectSelectorViewModel() : ViewModel(), KoinComponent {
+    private val projectsRepository: IProjectsRepository by inject()
+    private val session: Session by inject()
+
     val currentProjectId by lazy { session.currentProjectId }
 
     fun onOpen() {

@@ -11,13 +11,15 @@ import de.libf.taigamp.state.Session
 import de.libf.taigamp.ui.utils.MutableResultFlow
 import de.libf.taigamp.ui.utils.loadOrError
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 
-class ProfileViewModel(
-    private val usersRepository: IUsersRepository,
-    private val projectsRepository: IProjectsRepository,
-    private val session: Session
-) : ViewModel() {
+class ProfileViewModel() : ViewModel(), KoinComponent {
+    private val usersRepository: IUsersRepository by inject()
+    private val projectsRepository: IProjectsRepository by inject()
+    private val session: Session by inject()
+
     val currentUser = MutableResultFlow<User>()
     val currentUserStats = MutableResultFlow<Stats>()
     val currentUserProjects = MutableResultFlow<List<Project>>()

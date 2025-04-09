@@ -3,6 +3,8 @@ package de.libf.taigamp.di
 //import org.koin.compose.viewmodel.dsl.viewModelOf
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.libf.taigamp.data.api.TaigaApi
+import de.libf.taigamp.data.api.TestApi
+import de.libf.taigamp.data.api.createTaigaApi
 import de.libf.taigamp.data.repositories.AuthRepository
 import de.libf.taigamp.data.repositories.ProjectsRepository
 import de.libf.taigamp.data.repositories.SprintsRepository
@@ -31,6 +33,7 @@ import de.libf.taigamp.ui.screens.wiki.list.WikiListViewModel
 import de.libf.taigamp.ui.screens.wiki.page.WikiPageViewModel
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.last
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -41,14 +44,16 @@ suspend fun getApiUrl(session: Session) = // for compatibility with older app ve
         ""
     } + "${session.server.last()}/${TaigaApi.API_PREFIX}"
 
-internal const val dataStoreFileName = "taigamp_db"
+internal const val dataStoreFileName = "taigamp.preferences_pb"
 
 val dataModule = module {
     single<TaigaApi> {
-        Ktorfit.Builder()
-            .httpClient(get<HttpClient>())
-            .build()
-            .create()
+        TestApi()
+//        Ktorfit.Builder()
+//            .baseUrl("http://127.0.0.1:9999/${TaigaApi.API_PREFIX}/")
+//            .httpClient(get<HttpClient>())
+//            .build()
+//            .createTaigaApi()
     }
 
     single { Session(get()) }
@@ -65,21 +70,38 @@ val repoModule = module {
 }
 
 val viewModelModule = module {
+//    viewModel { MainViewModel() }
     viewModelOf(::MainViewModel)
+//    viewModel { LoginViewModel(get()) }
     viewModelOf(::LoginViewModel)
+//    viewModel { DashboardViewModel(get(), get(), get()) }
     viewModelOf(::DashboardViewModel)
-    viewModelOf(::ScrumViewModel)
-    viewModelOf(::EpicsViewModel)
+//    viewModel { ScrumViewModel(get(), get(), get()) }
+ viewModelOf(::ScrumViewModel)
+//    viewModel { EpicsViewModel(get(), get()) }
+ viewModelOf(::EpicsViewModel)
+//    viewModel { ProjectSelectorViewModel(get(), get()) }
     viewModelOf(::ProjectSelectorViewModel)
-    viewModelOf(::SprintViewModel)
+//    viewModel { SprintViewModel(get(), get(), get()) }
+ viewModelOf(::SprintViewModel)
+//    viewModel { CommonTaskViewModel(get(), get(), get(), get()) }
     viewModelOf(::CommonTaskViewModel)
+//    viewModel { TeamViewModel(get(), get()) }
     viewModelOf(::TeamViewModel)
-    viewModelOf(::SettingsViewModel)
-    viewModelOf(::CreateTaskViewModel)
-    viewModelOf(::IssuesViewModel)
-    viewModelOf(::KanbanViewModel)
-    viewModelOf(::ProfileViewModel)
+//    viewModel { SettingsViewModel(get(), get(), get()) }
+ viewModelOf(::SettingsViewModel)
+//    viewModel { CreateTaskViewModel(get(), get()) }
+ viewModelOf(::CreateTaskViewModel)
+//    viewModel { IssuesViewModel(get(), get()) }
+ viewModelOf(::IssuesViewModel)
+//    viewModel { KanbanViewModel(get(), get(), get()) }
+ viewModelOf(::KanbanViewModel)
+//    viewModel { ProfileViewModel(get(), get(), get()) }
+ viewModelOf(::ProfileViewModel)
+//    viewModel { WikiListViewModel(get(), get()) }
     viewModelOf(::WikiListViewModel)
-    viewModelOf(::WikiPageViewModel)
-    viewModelOf(::WikiCreatePageViewModel)
+//    viewModel { WikiPageViewModel(get(), get()) }
+ viewModelOf(::WikiPageViewModel)
+//    viewModel { WikiCreatePageViewModel(get()) }
+ viewModelOf(::WikiCreatePageViewModel)
 }

@@ -20,13 +20,13 @@ import androidx.compose.ui.unit.dp
 import de.libf.taigamp.domain.entities.CustomField
 import de.libf.taigamp.domain.entities.CustomFieldType
 import de.libf.taigamp.domain.entities.CustomFieldValue
+import de.libf.taigamp.openUrl
 import de.libf.taigamp.ui.components.DropdownSelector
 import de.libf.taigamp.ui.components.editors.TextFieldWithHint
 import de.libf.taigamp.ui.components.pickers.DatePicker
 import de.libf.taigamp.ui.components.texts.MarkdownText
 import de.libf.taigamp.ui.theme.TaigaMobileTheme
 import de.libf.taigamp.ui.utils.isValidUrl
-import de.libf.taigamp.ui.utils.openUrl
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource

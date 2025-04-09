@@ -1,7 +1,6 @@
 package de.libf.taigamp.data.repositories
 
 import de.libf.taigamp.state.Session
-import de.libf.taigamp.dagger.toLocalDate
 import de.libf.taigamp.data.api.*
 import de.libf.taigamp.domain.entities.*
 import de.libf.taigamp.domain.repositories.ITasksRepository
@@ -20,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.toLocalDate
 import kotlin.text.append
 
 class TasksRepository constructor(
@@ -303,7 +303,8 @@ class TasksRepository constructor(
                         value = values.attributes_values[it.id]?.let { value ->
                             CustomFieldValue(
                                 when (it.type) {
-                                    CustomFieldType.Date -> (value as? String)?.takeIf { it.isNotEmpty() }?.toLocalDate()
+                                    CustomFieldType.Date -> (value as? String)?.takeIf { it.isNotEmpty() }
+                                        ?.let { LocalDate.parse(it) }
                                     CustomFieldType.Checkbox -> value as? Boolean
                                     else -> value
                                 } ?: return@let null

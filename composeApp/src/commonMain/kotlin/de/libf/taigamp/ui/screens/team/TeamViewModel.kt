@@ -11,11 +11,13 @@ import de.libf.taigamp.ui.utils.loadOrError
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class TeamViewModel(
-    private val usersRepository: IUsersRepository,
-    private val session: Session
-) : ViewModel() {
+class TeamViewModel() : ViewModel(), KoinComponent {
+    private val usersRepository: IUsersRepository by inject()
+    private val session: Session by inject()
+
     val projectName by lazy { session.currentProjectName }
     val team = MutableResultFlow<List<TeamMember>?>()
 

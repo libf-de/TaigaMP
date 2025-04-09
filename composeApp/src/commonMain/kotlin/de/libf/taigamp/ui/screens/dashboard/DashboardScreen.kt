@@ -8,7 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import de.libf.taigamp.domain.entities.CommonTask
 import de.libf.taigamp.domain.entities.Project
@@ -36,7 +36,7 @@ fun DashboardScreen(
     navController: NavController,
     showMessage: (message: StringResource) -> Unit = {},
 ) {
-    val viewModel: DashboardViewModel = viewModel()
+    val viewModel: DashboardViewModel = koinViewModel()
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }

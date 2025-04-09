@@ -6,7 +6,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import app.cash.paging.compose.collectAsLazyPagingItems
 import de.libf.taigamp.domain.entities.*
@@ -30,6 +29,7 @@ import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import taigamultiplatform.composeapp.generated.resources.Res
 import taigamultiplatform.composeapp.generated.resources.edit
 import taigamultiplatform.composeapp.generated.resources.epic_slug
@@ -47,7 +47,7 @@ fun CommonTaskScreen(
     ref: Int,
     showMessage: (message: StringResource) -> Unit = {}
 ) {
-    val viewModel: CommonTaskViewModel = viewModel()
+    val viewModel: CommonTaskViewModel = koinViewModel()
     LaunchedEffect(Unit) {
         viewModel.onOpen(commonTaskId, commonTaskType)
     }

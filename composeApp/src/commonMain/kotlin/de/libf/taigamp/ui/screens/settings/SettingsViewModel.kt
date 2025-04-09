@@ -8,12 +8,14 @@ import de.libf.taigamp.state.*
 import de.libf.taigamp.ui.utils.MutableResultFlow
 import de.libf.taigamp.ui.utils.loadOrError
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class SettingsViewModel(
-    private val session: Session,
-    private val settings: Settings,
-    private val userRepository: IUsersRepository
-) : ViewModel() {
+class SettingsViewModel() : ViewModel(), KoinComponent {
+    private val session: Session by inject()
+    private val settings: Settings by inject()
+    private val userRepository: IUsersRepository by inject()
+
     val user = MutableResultFlow<User>()
     val serverUrl by lazy { session.server }
 

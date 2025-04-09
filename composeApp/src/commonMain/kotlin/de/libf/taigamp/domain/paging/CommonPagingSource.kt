@@ -2,7 +2,7 @@ package de.libf.taigamp.domain.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.diamondedge.logging.logging
+import io.github.aakira.napier.Napier
 
 class CommonPagingSource<T : Any>(
     private val loadBackend: suspend (Int) -> List<T>
@@ -29,7 +29,7 @@ class CommonPagingSource<T : Any>(
                 nextKey = if (response.isNotEmpty()) page + 1 else null
             )
         } catch (e: Exception) {
-            logging("CommonPagingSource").w { e }
+            Napier.w("error", e)
             LoadResult.Error(e)
         }
     }

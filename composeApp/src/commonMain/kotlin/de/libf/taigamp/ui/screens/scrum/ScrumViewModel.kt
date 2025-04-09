@@ -17,14 +17,16 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import taigamultiplatform.composeapp.generated.resources.Res
 import taigamultiplatform.composeapp.generated.resources.permission_error
 
-class ScrumViewModel(
-    private val tasksRepository: ITasksRepository,
-    private val sprintsRepository: ISprintsRepository,
-    private val session: Session
-) : ViewModel() {
+class ScrumViewModel() : ViewModel(), KoinComponent {
+    private val tasksRepository: ITasksRepository by inject()
+    private val sprintsRepository: ISprintsRepository by inject()
+    private val session: Session by inject()
+
     val projectName by lazy { session.currentProjectName }
 
     private var shouldReload = true

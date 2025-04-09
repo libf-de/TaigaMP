@@ -7,7 +7,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import de.libf.taigamp.ui.components.dialogs.LoadingDialog
 import de.libf.taigamp.ui.components.editors.Editor
@@ -26,7 +26,7 @@ fun WikiCreatePageScreen(
     navController: NavController,
     showMessage: (StringResource) -> Unit = {},
 ) {
-    val viewModel: WikiCreatePageViewModel = viewModel()
+    val viewModel: WikiCreatePageViewModel = koinViewModel()
 
     val creationResult by viewModel.creationResult.collectAsState()
     creationResult.subscribeOnError(showMessage)

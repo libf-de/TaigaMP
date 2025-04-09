@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
@@ -28,7 +28,7 @@ fun EpicsScreen(
     navController: NavController,
     showMessage: (message: StringResource) -> Unit = {},
 ) {
-    val viewModel: EpicsViewModel = viewModel()
+    val viewModel: EpicsViewModel = koinViewModel()
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }

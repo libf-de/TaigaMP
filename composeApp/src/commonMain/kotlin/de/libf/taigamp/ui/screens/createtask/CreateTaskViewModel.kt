@@ -10,11 +10,12 @@ import de.libf.taigamp.state.postUpdate
 import de.libf.taigamp.ui.utils.MutableResultFlow
 import de.libf.taigamp.ui.utils.loadOrError
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class CreateTaskViewModel(
-    private val tasksRepository: ITasksRepository,
-    private val session: Session
-) : ViewModel() {
+class CreateTaskViewModel() : ViewModel(), KoinComponent {
+    private val tasksRepository: ITasksRepository by inject()
+    private val session: Session by inject()
 
     val creationResult = MutableResultFlow<CommonTask>()
 

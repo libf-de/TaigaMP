@@ -14,13 +14,15 @@ import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import taigamultiplatform.composeapp.generated.resources.Res
 import taigamultiplatform.composeapp.generated.resources.permission_error
 
-class WikiPageViewModel(
-    private val wikiRepository: IWikiRepository,
-    private val userRepository: IUsersRepository
-) : ViewModel() {
+class WikiPageViewModel() : ViewModel(), KoinComponent {
+    private val wikiRepository: IWikiRepository by inject()
+    private val userRepository: IUsersRepository by inject()
+
     private lateinit var pageSlug: String
 
     val page = MutableResultFlow<WikiPage>()

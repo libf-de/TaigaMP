@@ -38,7 +38,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import de.libf.taigamp.domain.entities.AuthType
 import de.libf.taigamp.ui.components.dialogs.ConfirmActionDialog
@@ -69,7 +69,7 @@ fun LoginScreen(
     navController: NavController,
     showMessage: (message: StringResource) -> Unit = {},
 ) {
-    val viewModel: LoginViewModel = viewModel()
+    val viewModel: LoginViewModel = koinViewModel()
 
     val loginResult by viewModel.loginResult.collectAsState()
     loginResult.also {

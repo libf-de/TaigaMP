@@ -1,6 +1,6 @@
 package de.libf.taigamp.ui.utils
 
-import com.diamondedge.logging.logging
+import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.StringResource
 import taigamultiplatform.composeapp.generated.resources.Res
 import taigamultiplatform.composeapp.generated.resources.common_error_message
@@ -18,7 +18,7 @@ internal inline fun <T> MutableResultFlow<T>.loadOrError(
     value = try {
         SuccessResult(load())
     } catch (e: Exception) {
-        logging("loadOrError").e { e }
+        Napier.e("error", e)
         ErrorResult(messageId)
     }
 }

@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import de.libf.taigamp.domain.entities.Project
@@ -54,7 +54,7 @@ fun ProfileScreen(
     showMessage: (StringResource) -> Unit = {},
     userId: Long
 ) {
-    val viewModel: ProfileViewModel = viewModel()
+    val viewModel: ProfileViewModel = koinViewModel()
 
     LaunchedEffect(Unit) {
         viewModel.onOpen(userId)

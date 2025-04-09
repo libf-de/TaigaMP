@@ -6,6 +6,8 @@ import de.libf.taigamp.di.repoModule
 import de.libf.taigamp.di.viewModelModule
 import de.libf.taigamp.ui.screens.main.FilePicker
 import de.libf.taigamp.ui.screens.main.MainScreen
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.jvm.javaio.toByteReadChannel
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -60,9 +62,14 @@ private val filePicker: FilePicker = object : FilePicker() {
 }
 
 fun main() = application {
+    Napier.base(DebugAntilog())
+
     startKoin {
         modules(dataModule, repoModule, viewModelModule, platformModule)
     }
+
+    Napier.d("hello")
+
     Window(onCloseRequest = ::exitApplication, title = stringResource(Res.string.app_name)) {
         MainScreen(filePicker)
     }

@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import de.libf.taigamp.domain.entities.CommonTaskType
 import de.libf.taigamp.ui.utils.LoadingResult
@@ -35,7 +35,7 @@ fun CreateTaskScreen(
     swimlaneId: Long? = null,
     showMessage: (message: StringResource) -> Unit = {},
 ) {
-    val viewModel: CreateTaskViewModel = viewModel()
+    val viewModel: CreateTaskViewModel = koinViewModel()
 
     val creationResult by viewModel.creationResult.collectAsState()
     creationResult.subscribeOnError(showMessage)

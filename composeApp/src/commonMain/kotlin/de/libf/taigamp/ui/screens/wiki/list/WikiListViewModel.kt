@@ -9,11 +9,13 @@ import de.libf.taigamp.state.Session
 import de.libf.taigamp.ui.utils.MutableResultFlow
 import de.libf.taigamp.ui.utils.loadOrError
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class WikiListViewModel(
-    private val session: Session,
-    private val wikiRepository: IWikiRepository
-) : ViewModel() {
+class WikiListViewModel() : ViewModel(), KoinComponent {
+    private val session: Session by inject()
+    private val wikiRepository: IWikiRepository by inject()
+
     val projectName by lazy { session.currentProjectName }
 
     val wikiPages = MutableResultFlow<List<WikiPage>>()
