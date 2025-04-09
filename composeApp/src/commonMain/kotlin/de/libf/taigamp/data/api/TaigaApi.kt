@@ -5,8 +5,6 @@ import de.libf.taigamp.domain.entities.*
 import de.libf.taigamp.domain.paging.CommonPagingSource
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.http.cio.Response
-import io.ktor.http.content.MultiPartData
-import io.ktor.http.content.PartData
 
 /**
  * All API endpoints
@@ -16,6 +14,7 @@ interface TaigaApi {
         const val API_PREFIX = "api/v1"
         const val AUTH_ENDPOINTS = "auth"
         const val REFRESH_ENDPOINT = "auth/refresh"
+        const val baseUrlPlaceholder = "https://nothing.nothing"
     }
 
     @POST("auth")
@@ -88,6 +87,7 @@ interface TaigaApi {
     suspend fun getCommonTaskFiltersData(
         @Path("taskPath") taskPath: CommonTaskPathPlural,
         @Query("project") project: Long,
+        //@Query("milestone") milestone: Any? = null
         @Query("milestone") milestone: Any? = null
     ): FiltersDataResponse
 

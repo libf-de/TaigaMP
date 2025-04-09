@@ -1,6 +1,7 @@
 package de.libf.taigamp.data.api
 
 import de.libf.taigamp.domain.entities.CommonTaskType
+import kotlin.jvm.JvmInline
 
 /**
  * Since API endpoints for different types of tasks are often the same (only part in the path is different),

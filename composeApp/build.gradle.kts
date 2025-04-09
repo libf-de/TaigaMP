@@ -9,9 +9,12 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.ktorfit)
 }
 
 kotlin {
+    jvm("desktop")
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -37,6 +40,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.cio)
             implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -55,6 +59,9 @@ kotlin {
             implementation(libs.koin.viewmodel)
             implementation(libs.koin.navigation)
             implementation(libs.ktor)
+            implementation(libs.ktor.contentnegotiation)
+            implementation(libs.ktor.contentnegotiation.json)
+            implementation(libs.ktor.authorization)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.androidx.datastore)
             implementation(libs.kotlinx.serialization.json)
@@ -67,10 +74,43 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.ktor)
             implementation(libs.androidx.constraintlayout)
+            implementation(libs.markdown.renderer)
+            implementation(libs.markdown.renderer.coil)
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.darwin)
+        }
+
+        val desktopMain by getting {
+            dependencies {
+                implementation(libs.ktor.cio)
+
+                // Compose Multiplatform dependencies
+                implementation(compose.desktop.common)
+                implementation(compose.desktop.currentOs)
+                implementation(compose.preview)
+
+                // Kotlinx coroutines
+                implementation(libs.kotlinx.coroutines.swing)
+
+                val lwjglVersion = "3.3.1"
+                listOf("lwjgl", "lwjgl-tinyfd").forEach { lwjglDep ->
+                    implementation("org.lwjgl:${lwjglDep}:${lwjglVersion}")
+                    listOf(
+                        "natives-windows",
+                        "natives-windows-x86",
+                        "natives-windows-arm64",
+                        "natives-macos",
+                        "natives-macos-arm64",
+                        "natives-linux",
+                        "natives-linux-arm64",
+                        "natives-linux-arm32"
+                    ).forEach { native ->
+                        runtimeOnly("org.lwjgl:${lwjglDep}:${lwjglVersion}:${native}")
+                    }
+                }
+            }
         }
     }
 }
@@ -109,3 +149,14 @@ dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
 
+compose.desktop {
+    application {
+        mainClass = "MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "TaigaMP"
+            packageVersion = "1.0.0"
+        }
+    }
+}

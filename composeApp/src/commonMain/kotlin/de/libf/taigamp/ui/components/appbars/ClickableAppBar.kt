@@ -7,11 +7,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import de.libf.taigamp.R
 import de.libf.taigamp.ui.utils.clickableUnindicated
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.choose_project_title
+import taigamultiplatform.composeapp.generated.resources.ic_arrow_down
 
 @Composable
 fun ClickableAppBar(
@@ -27,14 +29,14 @@ fun ClickableAppBar(
         ) {
             Text(
                 text = projectName.takeIf { it.isNotEmpty() }
-                    ?: stringResource(R.string.choose_project_title),
+                    ?: stringResource(Res.string.choose_project_title),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f, fill = false)
             )
 
             Icon(
-                painter = painterResource(R.drawable.ic_arrow_down),
+                painter = painterResource(Res.drawable.ic_arrow_down),
                 contentDescription = null
             )
         }

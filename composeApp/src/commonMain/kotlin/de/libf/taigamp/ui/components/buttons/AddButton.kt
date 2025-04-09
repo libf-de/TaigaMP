@@ -7,9 +7,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import de.libf.taigamp.R
+import org.jetbrains.compose.resources.painterResource
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.ic_add
 
 /**
  * Text button with plus icon on the left
@@ -21,7 +22,7 @@ fun AddButton(
 ) = FilledTonalButton(onClick = onClick) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
-            painter = painterResource(R.drawable.ic_add),
+            painter = painterResource(Res.drawable.ic_add),
             contentDescription = null
         )
 

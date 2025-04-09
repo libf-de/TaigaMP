@@ -10,9 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import de.libf.taigamp.R
+import org.jetbrains.compose.resources.painterResource
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.ic_add
 
 @Composable
 fun PlusButton(
@@ -26,7 +27,7 @@ fun PlusButton(
         .clip(CircleShape)
 ) {
     Icon(
-        painter = painterResource(R.drawable.ic_add),
+        painter = painterResource(Res.drawable.ic_add),
         contentDescription = null,
         tint = tint,
         modifier = modifier.size(26.dp)

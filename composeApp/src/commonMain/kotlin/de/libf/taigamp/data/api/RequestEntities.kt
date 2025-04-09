@@ -1,6 +1,5 @@
 package de.libf.taigamp.data.api
 
-import de.libf.taigamp.domain.entities.CustomFieldValue
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable

@@ -7,8 +7,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import de.libf.taigamp.R
+import org.jetbrains.compose.resources.stringResource
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.nothing_to_see
 
 /**
  * Common nothing to see here text
@@ -20,7 +21,7 @@ fun NothingToSeeHereText() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = stringResource(R.string.nothing_to_see),
+            text = stringResource(Res.string.nothing_to_see),
             color = MaterialTheme.colorScheme.outline
         )
     }

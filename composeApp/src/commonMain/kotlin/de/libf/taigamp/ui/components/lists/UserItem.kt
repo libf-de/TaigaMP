@@ -12,25 +12,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
-import de.libf.taigamp.R
+import coil3.compose.rememberAsyncImagePainter
 import de.libf.taigamp.domain.entities.User
 import de.libf.taigamp.ui.components.dialogs.ConfirmActionDialog
 import de.libf.taigamp.ui.theme.TaigaMobileTheme
 import de.libf.taigamp.ui.utils.clickableUnindicated
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.format
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.default_avatar
+import taigamultiplatform.composeapp.generated.resources.ic_remove
+import taigamultiplatform.composeapp.generated.resources.remove_user_text
+import taigamultiplatform.composeapp.generated.resources.remove_user_title
 
 /**
  * User info (name and avatar).
  */
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun UserItem(
     user: User,
@@ -40,16 +41,16 @@ fun UserItem(
     modifier = Modifier.clickableUnindicated { onUserItemClick() },
     verticalAlignment = Alignment.CenterVertically
 ) {
-    val dateTimeFormatter = remember { DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM) }
+    val dateTimeFormatter = remember { LocalDateTime.Formats.ISO }
     val imageSize = if (dateTime != null) 46.dp else 40.dp
 
     Image(
-        painter = rememberImagePainter(
-            data = user.avatarUrl ?: R.drawable.default_avatar,
-            builder = {
-                error(R.drawable.default_avatar)
-                crossfade(true)
-            }
+        painter = rememberAsyncImagePainter(
+            model = user.avatarUrl ?: Res.drawable.default_avatar,
+//            builder = {
+//                error(R.drawable.default_avatar)
+//                crossfade(true)
+//            }
         ),
         contentDescription = null,
         contentScale = ContentScale.Crop,
@@ -86,14 +87,14 @@ fun UserItemWithAction(
 
     if (isAlertVisible) {
         ConfirmActionDialog(
-            title = stringResource(R.string.remove_user_title),
-            text = stringResource(R.string.remove_user_text),
+            title = stringResource(Res.string.remove_user_title),
+            text = stringResource(Res.string.remove_user_text),
             onConfirm = {
                 isAlertVisible = false
                 onRemoveClick()
             },
             onDismiss = { isAlertVisible = false },
-            iconId = R.drawable.ic_remove
+            iconId = Res.drawable.ic_remove
         )
     }
 
@@ -109,7 +110,7 @@ fun UserItemWithAction(
 
         IconButton(onClick = { isAlertVisible = true }) {
             Icon(
-                painter = painterResource(R.drawable.ic_remove),
+                painter = painterResource(Res.drawable.ic_remove),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.outline
             )
@@ -117,7 +118,7 @@ fun UserItemWithAction(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun UserItemPreview() = TaigaMobileTheme {
     UserItem(

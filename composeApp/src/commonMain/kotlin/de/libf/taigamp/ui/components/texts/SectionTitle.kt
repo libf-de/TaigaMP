@@ -11,11 +11,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import de.libf.taigamp.R
+import org.jetbrains.compose.resources.painterResource
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.ic_add
 
 /**
  * Title with optional add button
@@ -53,12 +54,12 @@ fun SectionTitle(
                     onClick = it,
                     role = Role.Button,
                     interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = true)
+                    indication = ripple(bounded = true)
                 )
                 .padding(6.dp)
         ) {
             Icon(
-                painter = painterResource(R.drawable.ic_add),
+                painter = painterResource(Res.drawable.ic_add),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.fillMaxSize()

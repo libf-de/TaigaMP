@@ -8,10 +8,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import de.libf.taigamp.R
+import org.jetbrains.compose.resources.stringResource
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.loading
 
 /**
  * Alert with loader and text
@@ -31,7 +32,7 @@ fun LoadingDialog() = Dialog(onDismissRequest = { /* cannot dismiss */ }) {
 
             Spacer(Modifier.width(16.dp))
 
-            Text(stringResource(R.string.loading))
+            Text(stringResource(Res.string.loading))
         }
     }
 }

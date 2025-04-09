@@ -1,12 +1,12 @@
 package de.libf.taigamp.domain.entities
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Attachment(
     val id: Long,
     val name: String,
-    @Json(name = "size") val sizeInBytes: Long,
+    @SerialName("size") val sizeInBytes: Long,
     val url: String
 )

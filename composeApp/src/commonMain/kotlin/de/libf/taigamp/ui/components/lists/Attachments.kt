@@ -1,7 +1,5 @@
 package de.libf.taigamp.ui.components.lists
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListScope
@@ -15,29 +13,34 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import de.libf.taigamp.R
 import de.libf.taigamp.domain.entities.Attachment
+import de.libf.taigamp.openUrl
 import de.libf.taigamp.ui.components.dialogs.ConfirmActionDialog
 import de.libf.taigamp.ui.components.loaders.DotsLoader
 import de.libf.taigamp.ui.components.texts.SectionTitle
 import de.libf.taigamp.ui.screens.commontask.EditAction
 import de.libf.taigamp.ui.screens.main.LocalFilePicker
-import de.libf.taigamp.ui.utils.activity
-import java.io.InputStream
+import io.ktor.utils.io.ByteReadChannel
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.attachments_template
+import taigamultiplatform.composeapp.generated.resources.ic_attachment
+import taigamultiplatform.composeapp.generated.resources.ic_delete
+import taigamultiplatform.composeapp.generated.resources.ic_remove
+import taigamultiplatform.composeapp.generated.resources.remove_attachment_text
+import taigamultiplatform.composeapp.generated.resources.remove_attachment_title
 
 @Suppress("FunctionName")
 fun LazyListScope.Attachments(
     attachments: List<Attachment>,
-    editAttachments: EditAction<Pair<String, InputStream>, Attachment>
+    editAttachments: EditAction<Pair<String, ByteReadChannel>, Attachment>
 ) {
     item {
         val filePicker = LocalFilePicker.current
         SectionTitle(
-            text = stringResource(R.string.attachments_template).format(attachments.size),
+            text = stringResource(Res.string.attachments_template, attachments.size),
             onAddClick = {
                 filePicker.requestFile { file, stream -> editAttachments.select(file to stream) }
             }
@@ -71,14 +74,14 @@ private fun AttachmentItem(
 
     if (isAlertVisible) {
         ConfirmActionDialog(
-            title = stringResource(R.string.remove_attachment_title),
-            text = stringResource(R.string.remove_attachment_text),
+            title = stringResource(Res.string.remove_attachment_title),
+            text = stringResource(Res.string.remove_attachment_text),
             onConfirm = {
                 isAlertVisible = false
                 onRemoveClick()
             },
             onDismiss = { isAlertVisible = false },
-            iconId = R.drawable.ic_remove
+            iconId = Res.drawable.ic_remove
         )
     }
     Row(
@@ -87,9 +90,9 @@ private fun AttachmentItem(
             .weight(1f, fill = false)
             .padding(end = 4.dp)
     ) {
-        val activity = LocalContext.current.activity
+//        val activity = LocalContext.current.activity
         Icon(
-            painter = painterResource(R.drawable.ic_attachment),
+            painter = painterResource(Res.drawable.ic_attachment),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.outline,
             modifier = Modifier.padding(end = 2.dp)
@@ -99,7 +102,7 @@ private fun AttachmentItem(
             text = attachment.name,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.clickable {
-                activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(attachment.url)))
+                openUrl(attachment.url)
             }
         )
     }
@@ -111,7 +114,7 @@ private fun AttachmentItem(
             .clip(CircleShape)
     ) {
         Icon(
-            painter = painterResource(R.drawable.ic_delete),
+            painter = painterResource(Res.drawable.ic_delete),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.error
         )

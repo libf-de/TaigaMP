@@ -1,6 +1,7 @@
 package de.libf.taigamp.ui.components.appbars
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -32,5 +33,5 @@ fun AppBarWithBackButton(
         }
     } ?: {},
     actions = actions,
-    modifier = modifier.statusBarsPadding()
+    modifier = modifier.safeDrawingPadding()
 )

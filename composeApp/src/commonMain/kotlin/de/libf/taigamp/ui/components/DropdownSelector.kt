@@ -2,6 +2,7 @@ package de.libf.taigamp.ui.components
 
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,11 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import de.libf.taigamp.R
 import de.libf.taigamp.ui.theme.dialogTonalElevation
 import de.libf.taigamp.ui.utils.clickableUnindicated
-import de.libf.taigamp.ui.utils.surfaceColorAtElevation
+import org.jetbrains.compose.resources.painterResource
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.ic_arrow_down
 
 /**
  * Dropdown selector with animated arrow
@@ -54,13 +55,13 @@ fun <T> DropdownSelector(
 
             selectedItemContent(selectedItem)
 
-            val arrowRotation by updateTransition(
+            val arrowRotation by rememberTransition(
                 transitionState,
                 label = "arrow"
             ).animateFloat { if (it) -180f else 0f }
 
             Icon(
-                painter = painterResource(R.drawable.ic_arrow_down),
+                painter = painterResource(Res.drawable.ic_arrow_down),
                 contentDescription = null,
                 tint = tint,
                 modifier = Modifier.rotate(arrowRotation)

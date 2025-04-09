@@ -1,34 +1,35 @@
 package de.libf.taigamp.data.api
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 import de.libf.taigamp.domain.entities.*
-import java.time.LocalDate
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Contextual
 
 /**
  * Some complicated api responses
  */
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class AuthResponse(
     val auth_token: String,
     val refresh: String?,
     val id: Long
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class RefreshTokenResponse(
     val auth_token: String,
     val refresh: String
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class ProjectResponse(
     val id: Long,
     val name: String,
     val members: List<Member>
 ) {
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class Member(
         val id: Long,
         val photo: String?,
@@ -38,7 +39,7 @@ data class ProjectResponse(
     )
 }
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class FiltersDataResponse(
     val statuses: List<Filter>,
     val tags: List<Filter>?,
@@ -54,7 +55,7 @@ data class FiltersDataResponse(
     val severities: List<Filter>?,
     val types: List<Filter>?
 ) {
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class Filter(
         val id: Long?,
         val name: String?,
@@ -62,14 +63,14 @@ data class FiltersDataResponse(
         val count: Int
     )
 
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class UserFilter(
         val id: Long?,
         val full_name: String,
         val count: Int
     )
 
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class EpicsFilter(
         val id: Long?,
         val ref: Int?,
@@ -78,7 +79,7 @@ data class FiltersDataResponse(
     )
 }
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class CommonTaskResponse(
     val id: Long,
     val subject: String,
@@ -113,14 +114,14 @@ data class CommonTaskResponse(
     val severity: Long?,
     val priority: Long?
 ) {
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class StatusExtra(
         val color: String,
         val name: String
     )
 }
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class SprintResponse(
     val id: Long,
     val name: String,
@@ -130,13 +131,13 @@ data class SprintResponse(
     val order: Int,
     val user_stories: List<UserStory>
 ) {
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class UserStory(
         val id: Long
     )
 }
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class MemberStatsResponse(
     val closed_bugs: Map<String, Int>, // because api returns "null" key along with id keys, so...
     val closed_tasks: Map<String, Int>,
@@ -145,7 +146,7 @@ data class MemberStatsResponse(
     val wiki_changes: Map<String, Int>
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class CustomAttributeResponse(
     val id: Long,
     val name: String,
@@ -155,8 +156,8 @@ data class CustomAttributeResponse(
     val extra: List<String>?
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class CustomAttributesValuesResponse(
-    val attributes_values: Map<Long, Any?>,
+    val attributes_values: Map<Long, @Contextual Any?>, //TODO: Verify this works
     val version: Int
 )

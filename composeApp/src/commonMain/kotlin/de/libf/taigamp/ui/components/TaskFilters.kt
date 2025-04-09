@@ -1,9 +1,9 @@
 package de.libf.taigamp.ui.components
 
-import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,7 +19,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -28,15 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.google.accompanist.flowlayout.FlowRow
-import de.libf.taigamp.R
 import de.libf.taigamp.domain.entities.*
 import de.libf.taigamp.ui.components.badges.Badge
 import de.libf.taigamp.ui.components.editors.TextFieldWithHint
@@ -47,6 +43,28 @@ import de.libf.taigamp.ui.theme.dialogTonalElevation
 import de.libf.taigamp.ui.utils.clickableUnindicated
 import de.libf.taigamp.ui.utils.toColor
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.assignees_title
+import taigamultiplatform.composeapp.generated.resources.created_by_title
+import taigamultiplatform.composeapp.generated.resources.epic_title
+import taigamultiplatform.composeapp.generated.resources.filters
+import taigamultiplatform.composeapp.generated.resources.ic_arrow_down
+import taigamultiplatform.composeapp.generated.resources.ic_filter
+import taigamultiplatform.composeapp.generated.resources.ic_remove
+import taigamultiplatform.composeapp.generated.resources.not_in_an_epic
+import taigamultiplatform.composeapp.generated.resources.priority_title
+import taigamultiplatform.composeapp.generated.resources.role_title
+import taigamultiplatform.composeapp.generated.resources.severity_title
+import taigamultiplatform.composeapp.generated.resources.show_filters
+import taigamultiplatform.composeapp.generated.resources.status_title
+import taigamultiplatform.composeapp.generated.resources.tags_title
+import taigamultiplatform.composeapp.generated.resources.tasks_search_hint
+import taigamultiplatform.composeapp.generated.resources.type_title
+import taigamultiplatform.composeapp.generated.resources.unassigned
 
 /**
  * TaskFilters which reacts to LazyList scroll state
@@ -79,7 +97,9 @@ fun TasksFiltersWithLazyList(
  * Filters are placed in bottom sheet dialog as expandable options
  */
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class,
+    ExperimentalLayoutApi::class
+)
 @Composable
 fun TaskFilters(
     selected: FiltersData,
@@ -94,7 +114,7 @@ fun TaskFilters(
     var query by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(selected.query)) }
 
     TextFieldWithHint(
-        hintId = R.string.tasks_search_hint,
+        hintId = Res.string.tasks_search_hint,
         value = query,
         onValueChange = { query = it },
         onSearchClick = { onSelect(selected.copy(query = query.text)) },
@@ -111,7 +131,8 @@ fun TaskFilters(
     val coroutineScope = rememberCoroutineScope()
 
     // compose version of BottomSheetDialog (from Dialog and ModalBottomSheetLayout)
-    val bottomSheetState =  remember { ModalBottomSheetState(ModalBottomSheetValue.Expanded) } // fix to handle dialog closed state properly
+    val localDensity = LocalDensity.current
+    val bottomSheetState =  remember { ModalBottomSheetState(ModalBottomSheetValue.Expanded, localDensity) } // fix to handle dialog closed state properly
     var isVisible by remember { mutableStateOf(false) }
 
     FilledTonalButton(
@@ -124,13 +145,13 @@ fun TaskFilters(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                painter = painterResource(R.drawable.ic_filter),
+                painter = painterResource(Res.drawable.ic_filter),
                 contentDescription = null
             )
 
             Spacer(Modifier.width(space))
 
-            Text(stringResource(R.string.show_filters))
+            Text(stringResource(Res.string.show_filters))
 
             selected.filtersNumber.takeIf { it > 0 }?.let {
                 Spacer(Modifier.width(space))
@@ -172,7 +193,7 @@ fun TaskFilters(
                                 .padding(space)
                         ) {
                             Text(
-                                text = stringResource(R.string.filters),
+                                text = stringResource(Res.string.filters),
                                 style = MaterialTheme.typography.headlineSmall,
                                 modifier = Modifier.padding(start = space)
                             )
@@ -180,7 +201,7 @@ fun TaskFilters(
                             Spacer(Modifier.height(space))
 
                             Column(modifier = Modifier.fillMaxWidth()) {
-                                FlowRow(mainAxisSpacing = 4.dp) {
+                                FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                                     selected.types.forEach {
                                         FilterChip(
                                             filter = it,
@@ -219,7 +240,7 @@ fun TaskFilters(
                                     selected.assignees.forEach {
                                         FilterChip(
                                             filter = it,
-                                            noNameId = R.string.unassigned,
+                                            noNameId = Res.string.unassigned,
                                             onRemoveClick = { onSelect(selected.copy(assignees = selected.assignees - it)) }
                                         )
                                     }
@@ -241,7 +262,7 @@ fun TaskFilters(
                                     selected.epics.forEach {
                                         FilterChip(
                                             filter = it,
-                                            noNameId = R.string.not_in_an_epic,
+                                            noNameId = Res.string.not_in_an_epic,
                                             onRemoveClick = { onSelect(selected.copy(epics = selected.epics - it)) }
                                         )
                                     }
@@ -255,7 +276,7 @@ fun TaskFilters(
 
                                 unselectedFilters.types.ifHasData {
                                     Section(
-                                        titleId = R.string.type_title,
+                                        titleId = Res.string.type_title,
                                         filters = it,
                                         onSelect = { onSelect(selected.copy(types = selected.types + it)) }
                                     )
@@ -264,7 +285,7 @@ fun TaskFilters(
 
                                 unselectedFilters.severities.ifHasData {
                                     Section(
-                                        titleId = R.string.severity_title,
+                                        titleId = Res.string.severity_title,
                                         filters = it,
                                         onSelect = { onSelect(selected.copy(severities = selected.severities + it)) }
                                     )
@@ -273,7 +294,7 @@ fun TaskFilters(
 
                                 unselectedFilters.priorities.ifHasData {
                                     Section(
-                                        titleId = R.string.priority_title,
+                                        titleId = Res.string.priority_title,
                                         filters = it,
                                         onSelect = { onSelect(selected.copy(priorities = selected.priorities + it)) }
                                     )
@@ -282,7 +303,7 @@ fun TaskFilters(
 
                                 unselectedFilters.statuses.ifHasData {
                                     Section(
-                                        titleId = R.string.status_title,
+                                        titleId = Res.string.status_title,
                                         filters = it,
                                         onSelect = { onSelect(selected.copy(statuses = selected.statuses + it)) }
                                     )
@@ -291,7 +312,7 @@ fun TaskFilters(
 
                                 unselectedFilters.tags.ifHasData {
                                     Section(
-                                        titleId = R.string.tags_title,
+                                        titleId = Res.string.tags_title,
                                         filters = it,
                                         onSelect = { onSelect(selected.copy(tags = selected.tags + it)) }
                                     )
@@ -300,8 +321,8 @@ fun TaskFilters(
 
                                 unselectedFilters.assignees.ifHasData {
                                     Section(
-                                        titleId = R.string.assignees_title,
-                                        noNameId = R.string.unassigned,
+                                        titleId = Res.string.assignees_title,
+                                        noNameId = Res.string.unassigned,
                                         filters = it,
                                         onSelect = { onSelect(selected.copy(assignees = selected.assignees + it)) }
                                     )
@@ -310,7 +331,7 @@ fun TaskFilters(
 
                                 unselectedFilters.roles.ifHasData {
                                     Section(
-                                        titleId = R.string.role_title,
+                                        titleId = Res.string.role_title,
                                         filters = it,
                                         onSelect = { onSelect(selected.copy(roles = selected.roles + it)) }
                                     )
@@ -319,7 +340,7 @@ fun TaskFilters(
 
                                 unselectedFilters.createdBy.ifHasData {
                                     Section(
-                                        titleId = R.string.created_by_title,
+                                        titleId = Res.string.created_by_title,
                                         filters = it,
                                         onSelect = { onSelect(selected.copy(createdBy = selected.createdBy + it)) }
                                     )
@@ -328,8 +349,8 @@ fun TaskFilters(
 
                                 unselectedFilters.epics.ifHasData {
                                     Section(
-                                        titleId = R.string.epic_title,
-                                        noNameId = R.string.not_in_an_epic,
+                                        titleId = Res.string.epic_title,
+                                        noNameId = Res.string.not_in_an_epic,
                                         filters = it,
                                         onSelect = { onSelect(selected.copy(epics = selected.epics + it)) }
                                     )
@@ -348,10 +369,11 @@ fun TaskFilters(
 private inline fun <T : Filter> List<T>.ifHasData(action: (List<T>) -> Unit) =
     takeIf { it.hasData() }?.let(action)
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun <T : Filter> Section(
-    @StringRes titleId: Int,
-    @StringRes noNameId: Int? = null,
+    titleId: StringResource,
+    noNameId: StringResource? = null,
     filters: List<T>,
     onSelect: (T) -> Unit
 ) = Column(
@@ -366,12 +388,12 @@ private fun <T : Filter> Section(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.clickableUnindicated { isExpanded = !isExpanded }
     ) {
-        val arrowRotation by updateTransition(
+        val arrowRotation by rememberTransition(
             transitionState,
             label = "arrow"
         ).animateFloat { if (it) 0f else -90f }
         Icon(
-            painter = painterResource(R.drawable.ic_arrow_down),
+            painter = painterResource(Res.drawable.ic_arrow_down),
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.rotate(arrowRotation),
             contentDescription = null
@@ -387,8 +409,8 @@ private fun <T : Filter> Section(
     AnimatedVisibility(visible = isExpanded) {
         FlowRow(
             modifier = Modifier.padding(vertical = 2.dp, horizontal = 6.dp),
-            mainAxisSpacing = 4.dp,
-            crossAxisSpacing = 4.dp
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             filters.forEach {
                 FilterChip(
@@ -405,7 +427,7 @@ private fun <T : Filter> Section(
 @Composable
 private fun FilterChip(
     filter: Filter,
-    @StringRes noNameId: Int? = null,
+    noNameId: StringResource? = null,
     onClick: () -> Unit = {},
     onRemoveClick: (() -> Unit)? = null
 ) = Chip(
@@ -423,7 +445,7 @@ private fun FilterChip(
                     .clip(CircleShape)
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_remove),
+                    painter = painterResource(Res.drawable.ic_remove),
                     contentDescription = null,
                     modifier = Modifier.size(22.dp)
                 )
@@ -448,7 +470,7 @@ private fun FilterChip(
 }
 
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun TaskFiltersPreview() = TaigaMobileTheme {
     var selected by remember { mutableStateOf(FiltersData()) }

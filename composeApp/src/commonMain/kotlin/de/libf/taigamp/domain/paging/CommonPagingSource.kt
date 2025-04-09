@@ -2,7 +2,7 @@ package de.libf.taigamp.domain.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import timber.log.Timber
+import com.diamondedge.logging.logging
 
 class CommonPagingSource<T : Any>(
     private val loadBackend: suspend (Int) -> List<T>
@@ -29,7 +29,7 @@ class CommonPagingSource<T : Any>(
                 nextKey = if (response.isNotEmpty()) page + 1 else null
             )
         } catch (e: Exception) {
-            Timber.w(e)
+            logging("CommonPagingSource").w { e }
             LoadResult.Error(e)
         }
     }

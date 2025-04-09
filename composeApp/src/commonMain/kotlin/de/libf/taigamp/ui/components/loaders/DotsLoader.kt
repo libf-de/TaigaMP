@@ -10,9 +10,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.libf.taigamp.ui.theme.TaigaMobileTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Three dots pulsing
@@ -68,7 +68,7 @@ private fun Dot(
         )
 )
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun DotsLoaderPreview() = TaigaMobileTheme {
     DotsLoader()

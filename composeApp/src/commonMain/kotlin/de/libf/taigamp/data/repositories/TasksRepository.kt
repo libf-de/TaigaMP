@@ -24,8 +24,7 @@ import kotlin.text.append
 
 class TasksRepository constructor(
     private val taigaApi: TaigaApi,
-    private val session: Session,
-    private val externalScope : CoroutineScope
+    private val session: Session
 ) : ITasksRepository {
     private fun StatusesFilter.toStatus(statusType: StatusType) = Status(
         id = id,

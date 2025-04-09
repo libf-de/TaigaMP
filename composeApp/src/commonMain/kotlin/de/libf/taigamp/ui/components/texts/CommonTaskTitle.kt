@@ -6,24 +6,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.flowlayout.FlowRow
-import de.libf.taigamp.R
 import de.libf.taigamp.domain.entities.Tag
 import de.libf.taigamp.ui.components.Chip
 import de.libf.taigamp.ui.theme.TaigaMobileTheme
 import de.libf.taigamp.ui.theme.taigaRed
 import de.libf.taigamp.ui.utils.textColor
 import de.libf.taigamp.ui.utils.toColor
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.title_with_ref_pattern
 
 /**
  * Text with colored dots (indicators) at the end and tags
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CommonTaskTitle(
     ref: Int,
@@ -40,7 +41,7 @@ fun CommonTaskTitle(
     Text(
         text = buildAnnotatedString {
             if (isInactive) pushStyle(SpanStyle(color = MaterialTheme.colorScheme.outline, textDecoration = TextDecoration.LineThrough))
-            append(stringResource(R.string.title_with_ref_pattern).format(ref, title))
+            append(stringResource(Res.string.title_with_ref_pattern, ref, title))
             if (isInactive) pop()
 
             append(" ")
@@ -59,8 +60,8 @@ fun CommonTaskTitle(
         Spacer(Modifier.height(space))
 
         FlowRow(
-            mainAxisSpacing = space,
-            crossAxisSpacing = space
+            horizontalArrangement = Arrangement.spacedBy(space),
+            verticalArrangement = Arrangement.spacedBy(space),
         ) {
             tags.forEach {
                 val bgColor = it.color.toColor()
@@ -77,7 +78,7 @@ fun CommonTaskTitle(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun CommonTaskTitlePreview() = TaigaMobileTheme {
     CommonTaskTitle(

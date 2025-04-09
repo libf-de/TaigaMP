@@ -1,8 +1,8 @@
 package de.libf.taigamp.domain.entities
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Swimlane(
     val id: Long,
     val name: String,

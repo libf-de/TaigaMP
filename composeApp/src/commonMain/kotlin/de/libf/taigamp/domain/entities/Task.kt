@@ -1,9 +1,9 @@
 package de.libf.taigamp.domain.entities
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-import java.time.LocalDate
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Tasks related entities
@@ -47,13 +47,13 @@ data class CommonTask(
 )
 
 
-@JsonClass(generateAdapter = false)
+@Serializable
 enum class DueDateStatus {
-    @Json(name = "not_set") NotSet,
-    @Json(name = "set") Set,
-    @Json(name = "due_soon") DueSoon,
-    @Json(name = "past_due") PastDue,
-    @Json(name = "no_longer_applicable") NoLongerApplicable
+    @SerialName("not_set") NotSet,
+    @SerialName("set") Set,
+    @SerialName("due_soon") DueSoon,
+    @SerialName("past_due") PastDue,
+    @SerialName("no_longer_applicable") NoLongerApplicable
 }
 
 data class CommonTaskExtended(
@@ -89,19 +89,19 @@ data class CommonTaskExtended(
     val severity: Status? = null
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EpicShortInfo(
     val id: Long,
-    @Json(name = "subject") val title: String,
+    @SerialName("subject") val title: String,
     val ref: Int,
     val color: String
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class UserStoryShortInfo(
     val id: Long,
     val ref: Int,
-    @Json(name = "subject") val title: String,
+    @SerialName("subject") val title: String,
     val epics: List<EpicShortInfo>?
 ) {
     val epicColors get() = epics?.map { it.color }.orEmpty()

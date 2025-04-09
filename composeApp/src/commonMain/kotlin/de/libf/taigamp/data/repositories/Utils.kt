@@ -7,16 +7,18 @@ import de.libf.taigamp.ui.theme.taigaGray
 import de.libf.taigamp.ui.utils.toHex
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import retrofit2.HttpException
 
 suspend fun <T> withIO(block: suspend CoroutineScope.() -> T): T = withContext(Dispatchers.IO, block)
 
 inline fun <T> handle404(action: () -> List<T>): List<T> = try {
     action()
-} catch (e: HttpException) {
+} catch (e: Exception) {
     // suppress error if page not found (maximum page was reached)
-    e.takeIf { it.code() == 404 }?.let { emptyList() } ?: throw e
+    //e.takeIf { it.code() == 404 }?.let { emptyList() } ?: throw e
+    e.printStackTrace()
+    emptyList()
 }
 
 fun CommonTaskResponse.toCommonTask(commonTaskType: CommonTaskType) = CommonTask(

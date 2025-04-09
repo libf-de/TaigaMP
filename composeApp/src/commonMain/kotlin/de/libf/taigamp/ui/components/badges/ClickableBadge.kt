@@ -5,6 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.LocalMinimumInteractiveComponentEnforcement
+import androidx.compose.material.LocalMinimumTouchTargetEnforcement
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -16,20 +19,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import de.libf.taigamp.R
 import de.libf.taigamp.ui.theme.TaigaMobileTheme
 import de.libf.taigamp.ui.utils.textColor
 import de.libf.taigamp.ui.utils.toColor
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.ic_arrow_down
 
 /**
  * Badge on which you can click. With cool shimmer loading animation
  */
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ClickableBadge(
     text: String,
@@ -52,7 +56,7 @@ fun ClickableBadge(
     )
 
     CompositionLocalProvider(
-        LocalMinimumTouchTargetEnforcement provides false
+        LocalMinimumInteractiveComponentEnforcement provides false
     ) {
         Surface(
             shape = MaterialTheme.shapes.large,
@@ -61,7 +65,7 @@ fun ClickableBadge(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.clickable(
-                    indication = rememberRipple(),
+                    indication = ripple(),
                     onClick = onClick ,
                     interactionSource = remember { MutableInteractionSource() }
                 ).padding(horizontal = 12.dp, vertical = 4.dp)
@@ -76,7 +80,7 @@ fun ClickableBadge(
 
                 if (isClickable) {
                     Image(
-                        painter = painterResource(R.drawable.ic_arrow_down),
+                        painter = painterResource(Res.drawable.ic_arrow_down),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(textColor),
                         modifier = Modifier.rotate(if (isLoading) rotation else 0f)
@@ -105,7 +109,7 @@ fun ClickableBadge(
     isClickable
 )
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun ClickableBadgePreview() = TaigaMobileTheme {
     ClickableBadge(

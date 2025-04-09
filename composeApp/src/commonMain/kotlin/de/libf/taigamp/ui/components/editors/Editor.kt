@@ -14,17 +14,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.imePadding
-import com.google.accompanist.insets.navigationBarsHeight
-import de.libf.taigamp.R
 import de.libf.taigamp.ui.components.appbars.AppBarWithBackButton
 import de.libf.taigamp.ui.theme.TaigaMobileTheme
 import de.libf.taigamp.ui.theme.mainHorizontalScreenPadding
+import de.libf.taigamp.ui.utils.navigationBarsHeight
 import de.libf.taigamp.ui.utils.onBackPressed
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import taigamultiplatform.composeapp.generated.resources.Res
+import taigamultiplatform.composeapp.generated.resources.description_hint
+import taigamultiplatform.composeapp.generated.resources.ic_save
+import taigamultiplatform.composeapp.generated.resources.title_hint
 
 @Composable
 fun Editor(
@@ -56,7 +58,7 @@ fun Editor(
                 }
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_save),
+                    painter = painterResource(Res.drawable.ic_save),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -76,7 +78,7 @@ fun Editor(
 
         if (showTitle) {
             TextFieldWithHint(
-                hintId = R.string.title_hint,
+                hintId = Res.string.title_hint,
                 value = titleInput,
                 onValueChange = { titleInput = it },
                 style = MaterialTheme.typography.headlineSmall
@@ -86,7 +88,7 @@ fun Editor(
         }
 
         TextFieldWithHint(
-            hintId = R.string.description_hint,
+            hintId = Res.string.description_hint,
             value = descriptionInput,
             onValueChange = { descriptionInput = it },
         )
@@ -96,7 +98,7 @@ fun Editor(
 
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Preview
 @Composable
 fun TaskEditorPreview() = TaigaMobileTheme {
     Editor("Edit")
