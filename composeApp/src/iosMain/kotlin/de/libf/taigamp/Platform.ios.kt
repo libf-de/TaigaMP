@@ -15,3 +15,5 @@ actual fun sendBugReport() {
 actual fun openUrl(url: String) {
     TODO("implement openUrl")
 }
+
+actual fun getVersionName(): String = "testing"

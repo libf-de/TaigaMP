@@ -26,11 +26,16 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
+import platform.Foundation.NSUserDomainMask
 
+@OptIn(ExperimentalForeignApi::class)
 val platformModule = module {
     single<DataStore<Preferences>> {
         PreferenceDataStoreFactory.createWithPath(
