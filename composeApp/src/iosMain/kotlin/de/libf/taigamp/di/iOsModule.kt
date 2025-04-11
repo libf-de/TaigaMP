@@ -9,6 +9,7 @@ import okio.Path.Companion.toPath
 import org.koin.dsl.module
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.darwin.Darwin
+import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
