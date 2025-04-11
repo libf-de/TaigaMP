@@ -5,6 +5,7 @@ import de.libf.taigamp.domain.entities.*
 import de.libf.taigamp.domain.paging.CommonPagingSource
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.http.cio.Response
+import io.ktor.http.content.PartData
 
 /**
  * All API endpoints
@@ -340,7 +341,9 @@ interface TaigaApi {
     @Multipart
     suspend fun uploadCommonTaskAttachment(
         @Path("taskPath") taskPath: CommonTaskPathPlural,
-        @Part multipartBody: MultiPartFormDataContent,
+        @Part("project") projectId: String,
+        @Part("object_id") objectId: String,
+        @Part("") multipartBody: List<PartData>
     )
 
     // Custom attributes

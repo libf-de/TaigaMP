@@ -199,8 +199,7 @@ fun MainScreen(
 
 enum class Screens(val route: String, val resourceId: StringResource, val iconId: DrawableResource) {
     Dashboard(Routes.dashboard, Res.string.dashboard_short, Res.drawable.ic_dashboard),
-    Scrum(Routes.scrum, Res.string.scrum, Res.drawable.ic_scrum),
-    Epics(Routes.epics, Res.string.epics, Res.drawable.ic_epics),
+    Kanban(Routes.kanban, Res.string.kanban, Res.drawable.ic_kanban),
     Issues(Routes.issues, Res.string.issues, Res.drawable.ic_issues),
     More(Routes.more, Res.string.more, Res.drawable.ic_more)
 }
@@ -497,7 +496,9 @@ fun MoreScreen(
 
     Item(Res.drawable.ic_team, Res.string.team, Routes.team)
     Spacer(Modifier.height(space))
-    Item(Res.drawable.ic_kanban, Res.string.kanban, Routes.kanban)
+    Item(Res.drawable.ic_scrum, Res.string.scrum, Routes.scrum)
+    Spacer(Modifier.height(space))
+    Item(Res.drawable.ic_epics, Res.string.epics, Routes.epics)
     Spacer(Modifier.height(space))
     Item(Res.drawable.ic_wiki, Res.string.wiki, Routes.wiki_selector)
     Spacer(Modifier.height(space))

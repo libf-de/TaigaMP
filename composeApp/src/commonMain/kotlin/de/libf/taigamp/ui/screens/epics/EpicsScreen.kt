@@ -56,6 +56,7 @@ fun EpicsScreen(
         filters = filters.data ?: FiltersData(),
         activeFilters = activeFilters,
         selectFilters = viewModel::selectFilters,
+        navigateBack = navController::popBackStack,
         navigateToTask = navController::navigateToTaskScreen,
     )
 }
@@ -69,6 +70,7 @@ fun EpicsScreenContent(
     filters: FiltersData = FiltersData(),
     activeFilters: FiltersData = FiltersData(),
     selectFilters: (FiltersData) -> Unit = {},
+    navigateBack: () -> Unit = {},
     navigateToTask: NavigateToTask = { _, _, _ -> }
 ) = Column(
     modifier = Modifier.fillMaxSize(),
@@ -77,7 +79,8 @@ fun EpicsScreenContent(
     ClickableAppBar(
         projectName = projectName,
         actions = { PlusButton(onClick = navigateToCreateTask) },
-        onTitleClick = onTitleClick
+        onTitleClick = onTitleClick,
+        navigateBack = navigateBack
     )
 
     TasksFiltersWithLazyList(

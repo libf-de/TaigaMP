@@ -109,6 +109,7 @@ fun ScrumScreen(
         navigateToBoard = {
             navController.navigateToSprint(it.id)
         },
+        navigateBack = navController::popBackStack,
         navigateToTask = navController::navigateToTaskScreen,
         navigateToCreateTask = { navController.navigateToCreateTaskScreen(CommonTaskType.UserStory) },
         createSprint = viewModel::createSprint
@@ -129,6 +130,7 @@ fun ScrumScreenContent(
     navigateToBoard: (Sprint) -> Unit = {},
     navigateToTask: NavigateToTask = { _, _, _ -> },
     navigateToCreateTask: () -> Unit = {},
+    navigateBack: () -> Unit = {},
     createSprint: (name: String, start: LocalDate, end: LocalDate) -> Unit = { _, _, _ -> }
 ) = Column(
     modifier = Modifier.fillMaxSize(),
@@ -147,7 +149,8 @@ fun ScrumScreenContent(
                 }
             )
         },
-        onTitleClick = onTitleClick
+        onTitleClick = onTitleClick,
+        navigateBack = navigateBack
     )
 
     if (isCreateSprintDialogVisible) {

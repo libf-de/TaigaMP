@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -35,66 +37,86 @@ fun Editor(
     showTitle: Boolean = true,
     onSaveClick: (title: String, description: String) -> Unit = { _, _ -> },
     navigateBack: () -> Unit = {}
-) = Column(
-    modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.surface)
-        .imePadding()
 ) {
-    onBackPressed(navigateBack)
-
     var titleInput by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(title)) }
     var descriptionInput by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(description)) }
 
-    AppBarWithBackButton(
-        title = { Text(toolbarText) },
-        actions = {
-            IconButton(
-                onClick = {
-                    titleInput.text.trim().takeIf { it.isNotEmpty() }?.let {
-                        onSaveClick(it, descriptionInput.text.trim())
-                    }
-                }
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_save),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        },
-        navigateBack = navigateBack
-    )
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = mainHorizontalScreenPadding)
-    ) {
-
-        Spacer(Modifier.height(8.dp))
-
-        if (showTitle) {
-            TextFieldWithHint(
-                hintId = Res.string.title_hint,
-                value = titleInput,
-                onValueChange = { titleInput = it },
-                style = MaterialTheme.typography.headlineSmall
-            )
-
-            Spacer(Modifier.height(16.dp))
+    fun save() {
+        titleInput.text.trim().takeIf { it.isNotEmpty() }?.let {
+            onSaveClick(it, descriptionInput.text.trim())
         }
-
-        TextFieldWithHint(
-            hintId = Res.string.description_hint,
-            value = descriptionInput,
-            onValueChange = { descriptionInput = it },
-        )
-
-        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars).padding(bottom = 8.dp))
     }
 
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface)
+            .imePadding(),
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { save() },
+            ) {
+                Icon(painterResource(Res.drawable.ic_save), "Save task")
+            }
+        }
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            onBackPressed(navigateBack)
+
+            AppBarWithBackButton(
+                title = { Text(toolbarText) },
+                actions = {
+//            IconButton(
+//                onClick = { save() }
+//            ) {
+//                Icon(
+//                    painter = painterResource(Res.drawable.ic_save),
+//                    contentDescription = null,
+//                    tint = MaterialTheme.colorScheme.primary
+//                )
+//            }
+                },
+                navigateBack = navigateBack
+            )
+
+
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = mainHorizontalScreenPadding)
+            ) {
+
+                Spacer(Modifier.height(8.dp))
+
+                if (showTitle) {
+                    TextFieldWithHint(
+                        hintId = Res.string.title_hint,
+                        value = titleInput,
+                        onValueChange = { titleInput = it },
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+                }
+
+                TextFieldWithHint(
+                    hintId = Res.string.description_hint,
+                    value = descriptionInput,
+                    onValueChange = { descriptionInput = it },
+                )
+
+                Spacer(
+                    Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars)
+                        .padding(bottom = 8.dp)
+                )
+            }
+
+        }
+    }
 }
 
 @Preview

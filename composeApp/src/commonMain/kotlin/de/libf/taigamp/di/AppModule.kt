@@ -3,8 +3,6 @@ package de.libf.taigamp.di
 //import org.koin.compose.viewmodel.dsl.viewModelOf
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.libf.taigamp.data.api.TaigaApi
-import de.libf.taigamp.data.api.TaigaKtorClient
-import de.libf.taigamp.data.api.TestApi
 import de.libf.taigamp.data.api.createTaigaApi
 import de.libf.taigamp.data.repositories.AuthRepository
 import de.libf.taigamp.data.repositories.ProjectsRepository

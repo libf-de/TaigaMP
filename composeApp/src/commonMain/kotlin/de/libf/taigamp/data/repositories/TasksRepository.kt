@@ -6,6 +6,7 @@ import de.libf.taigamp.domain.entities.*
 import de.libf.taigamp.domain.repositories.ITasksRepository
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
+import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.headersOf
 import io.ktor.utils.io.ByteReadChannel
@@ -585,21 +586,22 @@ class TasksRepository constructor(
 
         val projectId = session.currentProjectId.value
 
-        val multiPartContent = MultiPartFormDataContent(
-            formData {
-                append(
-                    key = "attached_file",
-                    value = fileByteArray,
-                    headers = headersOf(HttpHeaders.ContentDisposition, "form-data; name=\"attached_file\"; filename=\"$fileName\"")
-                )
-                append("project", projectId.toString())
-                append("object_id", commonTaskId.toString())
-            }
-        )
+        val multiPartContent = formData {
+            append(
+                key = "attached_file",
+                value = fileByteArray,
+                headers = Headers.build {
+                    append(HttpHeaders.ContentType, "application/octet-stream")
+                    append(HttpHeaders.ContentDisposition, "filename=example.txt")
+                }
+            )
+        }
 
         taigaApi.uploadCommonTaskAttachment(
             taskPath = CommonTaskPathPlural(commonTaskType),
-            multipartBody = multiPartContent
+            projectId = projectId.toString(),
+            objectId = commonTaskId.toString(),
+            multipartBody = multiPartContent,
         )
     }
 

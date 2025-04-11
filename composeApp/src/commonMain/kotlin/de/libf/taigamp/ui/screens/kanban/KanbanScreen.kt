@@ -60,10 +60,10 @@ fun KanbanScreen(
         selectedSwimlane = selectedSwimlane,
         navigateToStory = { id, ref -> navController.navigateToTaskScreen(id, CommonTaskType.UserStory, ref) },
         onTitleClick = { navController.navigate(Routes.projectsSelector) },
-        navigateBack = navController::popBackStack,
         navigateToCreateTask = { statusId, swimlaneId ->
             navController.navigateToCreateTaskScreen(CommonTaskType.UserStory, statusId = statusId, swimlaneId = swimlaneId)
-        }
+        },
+        navigateBack = null
     )
 }
 
@@ -79,7 +79,7 @@ fun KanbanScreenContent(
     selectedSwimlane: Swimlane? = null,
     navigateToStory: (id: Long, ref: Int) -> Unit = { _, _ -> },
     onTitleClick: () -> Unit = {},
-    navigateBack: () -> Unit = {},
+    navigateBack: (() -> Unit)? = {},
     navigateToCreateTask: (statusId: Long, swinlanaeId: Long?) -> Unit = { _, _ -> }
 ) = Column(
     modifier = Modifier.fillMaxSize(),
