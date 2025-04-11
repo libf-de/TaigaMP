@@ -13,7 +13,7 @@ import org.koin.dsl.module
 val platformModule = module {
     single<DataStore<Preferences>> {
         PreferenceDataStoreFactory.createWithPath(
-            produceFile = { ("/home/fsch/" + dataStoreFileName).toPath() }
+            produceFile = { ("../../" + dataStoreFileName).toPath() }
         )
     }
 

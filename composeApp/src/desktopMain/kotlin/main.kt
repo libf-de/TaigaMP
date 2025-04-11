@@ -36,14 +36,14 @@ fun chooseFile(
     TinyFileDialogs.tinyfd_openFileDialog(
         title,
         initialDirectory,
-        aFilterPatterns,
+        null,
         null,
         false
     )
 }
 
 private fun pickFile() {
-    val fileName = chooseFile(".", "*.*", "Pick file")
+    val fileName = chooseFile(".", "*", "Pick file")
     fileName?.let {
         val initialFile = File(it)
         filePicker.filePicked(

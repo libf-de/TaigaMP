@@ -4,15 +4,18 @@ import de.libf.taigamp.state.Session
 import de.libf.taigamp.data.api.*
 import de.libf.taigamp.domain.entities.*
 import de.libf.taigamp.domain.repositories.ITasksRepository
+import io.github.aakira.napier.Napier
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.InternalAPI
 import io.ktor.utils.io.availableForRead
 import io.ktor.utils.io.readFully
+import io.ktor.utils.io.toByteArray
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
@@ -580,36 +583,33 @@ class TasksRepository constructor(
 
     @OptIn(InternalAPI::class)
     override suspend fun addAttachment(commonTaskId: Long, commonTaskType: CommonTaskType, fileName: String, inputStream: ByteReadChannel) = withIO {
-        val fileSize = inputStream.availableForRead // Get the size of the stream
-        val fileByteArray = ByteArray(fileSize) //create an array of the correct size.
-        inputStream.readFully(fileByteArray, 0, fileSize)
+        val fileByteArray: ByteArray = inputStream.toByteArray()
 
         val projectId = session.currentProjectId.value
 
-        val multiPartContent = formData {
-            append(
-                key = "attached_file",
-                value = fileByteArray,
-                headers = Headers.build {
+        val body = MultiPartFormDataContent(
+            formData {
+                append("project", projectId.toString())
+                append("object_id", commonTaskId.toString())
+                append("attached_file", fileByteArray, Headers.build {
                     append(HttpHeaders.ContentType, "application/octet-stream")
-                    append(HttpHeaders.ContentDisposition, "filename=example.txt")
-                }
-            )
-        }
+                    append(HttpHeaders.ContentDisposition, "form-data; name=\"attached_file\"; filename=\"$fileName\"")
+                })
+                append("from_comment", "False")  // As shown in the curl example
+            }
+        )
 
         taigaApi.uploadCommonTaskAttachment(
             taskPath = CommonTaskPathPlural(commonTaskType),
-            projectId = projectId.toString(),
-            objectId = commonTaskId.toString(),
-            multipartBody = multiPartContent,
+            body = body
         )
     }
 
     override suspend fun deleteAttachment(commonTaskType: CommonTaskType, attachmentId: Long) = withIO {
-        taigaApi.deleteCommonTaskAttachment(
+        require(taigaApi.deleteCommonTaskAttachment(
             taskPath = CommonTaskPathPlural(commonTaskType),
             attachmentId = attachmentId
-        )
+        ).status == HttpStatusCode.NoContent)
         return@withIO
     }
 

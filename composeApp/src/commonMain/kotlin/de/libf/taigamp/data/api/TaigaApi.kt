@@ -4,6 +4,7 @@ import de.jensklingenberg.ktorfit.http.*
 import de.libf.taigamp.domain.entities.*
 import de.libf.taigamp.domain.paging.CommonPagingSource
 import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.cio.Response
 import io.ktor.http.content.PartData
 
@@ -335,15 +336,19 @@ interface TaigaApi {
     suspend fun deleteCommonTaskAttachment(
         @Path("taskPath") taskPath: CommonTaskPathPlural,
         @Path("id") attachmentId: Long
-    ): Response
+    ): HttpResponse
 
     @POST("{taskPath}/attachments")
     @Multipart
     suspend fun uploadCommonTaskAttachment(
         @Path("taskPath") taskPath: CommonTaskPathPlural,
-        @Part("project") projectId: String,
-        @Part("object_id") objectId: String,
-        @Part("") multipartBody: List<PartData>
+//        @Query("project") projectId: String,
+//        @Query("object_id") objectId: String,
+        @Body body: MultiPartFormDataContent
+//        @Part("project") projectId: String,
+//        @Part("object_id") objectId: String,
+//        @Part("attached_file") attachedFile: ByteArray,  // <-- Changed to ByteArray
+//        @Part("attached_file") filename: String  // <-- Add filename parameter
     )
 
     // Custom attributes
