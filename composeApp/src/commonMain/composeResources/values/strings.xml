@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Taiga Mobile</string>
-    <string name="app_name_with_version_template" translatable="false">%s - %s</string>
+    <string name="app_name_with_version_template" translatable="false">%1$s - %2$s</string>
     <string name="global_taiga_host" translatable="false">https://api.taiga.io</string>
 
     <string name="yes">Yes</string>
@@ -38,7 +38,7 @@
     <string name="choose_project_title">Choose project</string>
 
     <string name="search_projects_hint">Search projects</string>
-    <string name="project_name_template" translatable="false">%s (%s)</string>
+    <string name="project_name_template" translatable="false">%1$s (%2$s)</string>
     <string name="project_member">Member</string>
     <string name="project_admin">Admin</string>
     <string name="project_owner">Owner</string>
@@ -48,17 +48,17 @@
     <string name="watching">Watching</string>
     <string name="my_projects">My projects</string>
 
-    <string name="title_with_ref_pattern" translatable="false">#%d %s</string>
+    <string name="title_with_ref_pattern" translatable="false">#%1$d %2$s</string>
     <string name="unassigned">Unassigned</string>
-    <string name="assignee_pattern">Assignee: %s</string>
+    <string name="assignee_pattern">Assignee: %1$s</string>
     <string name="backlog">Backlog</string>
 
     <string name="sprints_title">Sprints</string>
-    <string name="sprint_dates_template" translatable="false">%s - %s</string>
+    <string name="sprint_dates_template" translatable="false">%1$s - %2$s</string>
     <string name="stories_count_template">Stories: %d</string>
     <string name="taskboard">Board</string>
     <string name="closed">Closed</string>
-    <string name="closed_sprint_name_template">%s (Closed)</string>
+    <string name="closed_sprint_name_template">%1$s (Closed)</string>
     <string name="sprint_name_hint">Sprint name</string>
     <string name="show_closed_sprints">Show closed sprints</string>
     <string name="hide_closed_sprints">Hide closed sprints</string>
@@ -67,10 +67,10 @@
     <string name="tasks_without_story">Storyless tasks</string>
     <string name="sprint_issues">Sprint issues</string>
 
-    <string name="userstory_slug">User story #%d</string>
-    <string name="task_slug">Task #%d</string>
-    <string name="epic_slug">Epic #%d</string>
-    <string name="issue_slug">Issue #%d</string>
+    <string name="userstory_slug">User story #%1$d</string>
+    <string name="task_slug">Task #%1$d</string>
+    <string name="epic_slug">Epic #%1$d</string>
+    <string name="issue_slug">Issue #%1$d</string>
 
     <string name="epic">Epic</string>
     <string name="userstory">User story</string>
@@ -86,12 +86,12 @@
     <string name="watchers">Watchers</string>
     <string name="userstories">User stories</string>
     <string name="tasks">Tasks</string>
-    <string name="comments_template">%d Comments</string>
+    <string name="comments_template">%1$d Comments</string>
     <string name="comment_hint">Comment</string>
     <string name="delete_comment_title">Delete comment</string>
     <string name="delete_comment_text">Are you sure you want to delete this comment?</string>
     <string name="add_user">Add user</string>
-    <string name="attachments_template">%d Attachments</string>
+    <string name="attachments_template">%1$d Attachments</string>
     <string name="custom_fields">Custom fields</string>
     <string name="block">Block</string>
     <string name="unblock">Unblock</string>
@@ -188,10 +188,10 @@
     <string name="profile">Profile</string>
     <string name="contacts">Contacts</string>
 
-    <string name="status_with_number_template" translatable="false">%s - %d</string>
+    <string name="status_with_number_template" translatable="false">%1$s - %2$d</string>
 
     <!-- settings -->
-    <string name="username_template" translatable="false">\@%s</string>
+    <string name="username_template" translatable="false">\@%1$s</string>
     <string name="logout_title">Log out</string>
     <string name="logout_text">Are you sure you want to log out?</string>
 

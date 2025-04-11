@@ -15,7 +15,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -38,7 +37,7 @@ class EpicsViewModel() : ViewModel(), KoinComponent {
         viewModelScope.launch {
             filters.loadOrError { tasksRepository.getFiltersData(CommonTaskType.Epic) }
             filters.value.data?.let {
-                session.changeEpicsFilters(activeFilters.last().updateData(it))
+                session.changeEpicsFilters(activeFilters.value.updateData(it))
             }
         }
         shouldReload = false

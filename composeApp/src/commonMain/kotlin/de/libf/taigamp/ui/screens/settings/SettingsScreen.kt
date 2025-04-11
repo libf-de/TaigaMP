@@ -3,6 +3,7 @@ package de.libf.taigamp.ui.screens.settings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,7 +19,12 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import de.libf.taigamp.getVersionName
 import de.libf.taigamp.state.ThemeSetting
 import de.libf.taigamp.ui.components.dialogs.ConfirmActionDialog
 import de.libf.taigamp.ui.components.DropdownSelector
@@ -47,7 +53,8 @@ import taigamultiplatform.composeapp.generated.resources.theme_title
 import taigamultiplatform.composeapp.generated.resources.username_template
 import de.libf.taigamp.openUrl
 import de.libf.taigamp.sendBugReport
-import de.libf.taigamp.ui.utils.navigationBarsHeight
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import taigamultiplatform.composeapp.generated.resources.app_name
 import taigamultiplatform.composeapp.generated.resources.app_name_with_version_template
@@ -90,6 +97,7 @@ fun SettingsScreen(
     )
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SettingsScreenContent(
     avatarUrl: String?,
@@ -113,14 +121,13 @@ fun SettingsScreenContent(
         }
     )
 
-    Image(
-        painter = rememberAsyncImagePainter(
-            model = avatarUrl ?: Res.drawable.default_avatar,
-//            builder = {
-//                error(Res.drawable.default_avatar)
-//                crossfade(true)
-//            },
-        ),
+    AsyncImage(
+        model = ImageRequest.Builder(LocalPlatformContext.current)
+            .data(avatarUrl ?: Res.getUri("drawable/default_avatar.png"))
+            .crossfade(true)
+            .build(),
+        placeholder = painterResource(Res.drawable.default_avatar),
+        error = painterResource(Res.drawable.default_avatar),
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = Modifier
@@ -273,9 +280,7 @@ fun SettingsScreenContent(
         Spacer(Modifier.height(6.dp))
 
         Text(
-            text = stringResource(Res.string.app_name_with_version_template,
-                stringResource(Res.string.app_name),
-            ),
+            text = stringResource(Res.string.app_name_with_version_template, stringResource(Res.string.app_name), getVersionName()),
             style = MaterialTheme.typography.bodyLarge.merge(TextStyle(fontSize = 18.sp)),
             color = MaterialTheme.colorScheme.outline,
         )
@@ -287,7 +292,7 @@ fun SettingsScreenContent(
             modifier = Modifier.clickableUnindicated { openUrl(githubUrl) }
         )
 
-        Spacer(Modifier.navigationBarsHeight(0.dp))
+        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
     }
 }
 

@@ -287,7 +287,7 @@ private fun SprintsTabContent(
                 NothingToSeeHereText()
             }
 
-            Spacer(Modifier.navigationBarsHeight(8.dp))
+            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars).padding(bottom = 8.dp))
         }
     }
 }

@@ -1,5 +1,6 @@
 package de.libf.taigamp.domain.entities
 
+import de.libf.taigamp.domain.LocalDateTimeSerializer
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.SerialName
@@ -33,7 +34,7 @@ enum class CommonTaskType {
 
 data class CommonTask(
     val id: Long,
-    val createdDate: LocalDateTime,
+    @Serializable(with = LocalDateTimeSerializer::class) val createdDate: LocalDateTime,
     val title: String,
     val ref: Int,
     val status: Status,
@@ -60,7 +61,7 @@ data class CommonTaskExtended(
     val id: Long,
     val status: Status,
     val taskType: CommonTaskType,
-    val createdDateTime: LocalDateTime,
+    @Serializable(with = LocalDateTimeSerializer::class) val createdDateTime: LocalDateTime,
     val sprint: Sprint?,
     val assignedIds: List<Long>,
     val watcherIds: List<Long>,

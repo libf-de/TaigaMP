@@ -13,13 +13,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import de.libf.taigamp.domain.entities.User
 import de.libf.taigamp.ui.components.dialogs.ConfirmActionDialog
 import de.libf.taigamp.ui.theme.TaigaMobileTheme
 import de.libf.taigamp.ui.utils.clickableUnindicated
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -32,6 +37,7 @@ import taigamultiplatform.composeapp.generated.resources.remove_user_title
 /**
  * User info (name and avatar).
  */
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun UserItem(
     user: User,
@@ -44,14 +50,13 @@ fun UserItem(
     val dateTimeFormatter = remember { LocalDateTime.Formats.ISO }
     val imageSize = if (dateTime != null) 46.dp else 40.dp
 
-    Image(
-        painter = rememberAsyncImagePainter(
-            model = user.avatarUrl ?: Res.drawable.default_avatar,
-//            builder = {
-//                error(R.drawable.default_avatar)
-//                crossfade(true)
-//            }
-        ),
+    AsyncImage(
+        model = ImageRequest.Builder(LocalPlatformContext.current)
+            .data(user.avatarUrl ?: Res.getUri("drawable/default_avatar.png"))
+            .crossfade(true)
+            .build(),
+        placeholder = painterResource(Res.drawable.default_avatar),
+        error = painterResource(Res.drawable.default_avatar),
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = Modifier

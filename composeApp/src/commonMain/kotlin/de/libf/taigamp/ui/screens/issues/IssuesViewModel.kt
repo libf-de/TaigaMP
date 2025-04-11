@@ -36,7 +36,7 @@ class IssuesViewModel() : ViewModel(), KoinComponent {
         viewModelScope.launch {
             filters.loadOrError { tasksRepository.getFiltersData(CommonTaskType.Issue) }
             filters.value.data?.let {
-                session.changeIssuesFilters(activeFilters.last().updateData(it))
+                session.changeIssuesFilters(activeFilters.value.updateData(it))
             }
         }
         shouldReload = false

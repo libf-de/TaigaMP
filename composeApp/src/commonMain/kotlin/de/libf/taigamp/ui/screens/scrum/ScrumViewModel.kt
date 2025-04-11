@@ -42,7 +42,7 @@ class ScrumViewModel() : ViewModel(), KoinComponent {
             }
 
             filters.value.data?.let {
-                session.changeScrumFilters(activeFilters.last().updateData(it))
+                session.changeScrumFilters(activeFilters.value.updateData(it))
             }
         }
         shouldReload = false

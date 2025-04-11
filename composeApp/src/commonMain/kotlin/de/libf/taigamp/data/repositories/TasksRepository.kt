@@ -36,7 +36,7 @@ class TasksRepository constructor(
     override suspend fun getFiltersData(commonTaskType: CommonTaskType, isCommonTaskFromBacklog: Boolean) = withIO {
         taigaApi.getCommonTaskFiltersData(
             taskPath = CommonTaskPathPlural(commonTaskType),
-            project = session.currentProjectId.last(),
+            project = session.currentProjectId.value,
             milestone = if (isCommonTaskFromBacklog) "null" else null
         ).let {
             FiltersData(
@@ -113,22 +113,22 @@ class TasksRepository constructor(
 
     override suspend fun getWorkingOn() = withIO {
         val epics = async {
-            taigaApi.getEpics(assignedId = session.currentUserId.last(), isClosed = false)
+            taigaApi.getEpics(assignedId = session.currentUserId.value, isClosed = false)
                 .map { it.toCommonTask(CommonTaskType.Epic) }
         }
 
         val stories = async {
-            taigaApi.getUserStories(assignedId = session.currentUserId.last(), isClosed = false, isDashboard = true)
+            taigaApi.getUserStories(assignedId = session.currentUserId.value, isClosed = false, isDashboard = true)
                 .map { it.toCommonTask(CommonTaskType.UserStory) }
         }
 
         val tasks = async {
-            taigaApi.getTasks(assignedId = session.currentUserId.last(), isClosed = false)
+            taigaApi.getTasks(assignedId = session.currentUserId.value, isClosed = false)
                 .map { it.toCommonTask(CommonTaskType.Task) }
         }
 
         val issues = async {
-            taigaApi.getIssues(assignedIds = session.currentUserId.last().toString(), isClosed = false)
+            taigaApi.getIssues(assignedIds = session.currentUserId.value.toString(), isClosed = false)
                 .map { it.toCommonTask(CommonTaskType.Issue) }
         }
 
@@ -137,22 +137,22 @@ class TasksRepository constructor(
 
     override suspend fun getWatching() = withIO {
         val epics = async {
-            taigaApi.getEpics(watcherId = session.currentUserId.last(), isClosed = false)
+            taigaApi.getEpics(watcherId = session.currentUserId.value, isClosed = false)
                 .map { it.toCommonTask(CommonTaskType.Epic) }
         }
 
         val stories = async {
-            taigaApi.getUserStories(watcherId = session.currentUserId.last(), isClosed = false, isDashboard = true)
+            taigaApi.getUserStories(watcherId = session.currentUserId.value, isClosed = false, isDashboard = true)
                 .map { it.toCommonTask(CommonTaskType.UserStory) }
         }
 
         val tasks = async {
-            taigaApi.getTasks(watcherId = session.currentUserId.last(), isClosed = false)
+            taigaApi.getTasks(watcherId = session.currentUserId.value, isClosed = false)
                 .map { it.toCommonTask(CommonTaskType.Task) }
         }
 
         val issues = async {
-            taigaApi.getIssues(watcherId = session.currentUserId.last(), isClosed = false)
+            taigaApi.getIssues(watcherId = session.currentUserId.value, isClosed = false)
                 .map { it.toCommonTask(CommonTaskType.Issue) }
         }
 
@@ -182,7 +182,7 @@ class TasksRepository constructor(
         handle404 {
             taigaApi.getEpics(
                     page = page,
-                    project = session.currentProjectId.last(),
+                    project = session.currentProjectId.value,
                     query = filters.query,
                     assignedIds = filters.assignees.commaString(),
                     ownerIds = filters.createdBy.commaString(),
@@ -197,7 +197,7 @@ class TasksRepository constructor(
         val filters = async { getFiltersData(CommonTaskType.UserStory) }
         val swimlanes = async { getSwimlanes() }
 
-        taigaApi.getUserStories(project = session.currentProjectId.last())
+        taigaApi.getUserStories(project = session.currentProjectId.value)
             .map {
                 it.toCommonTaskExtended(
                     commonTaskType = CommonTaskType.UserStory,
@@ -211,7 +211,7 @@ class TasksRepository constructor(
     override suspend fun getBacklogUserStories(page: Int, filters: FiltersData) = withIO {
         handle404 {
             taigaApi.getUserStories(
-                    project = session.currentProjectId.last(),
+                    project = session.currentProjectId.value,
                     sprint = "null",
                     page = page,
                     query = filters.query,
@@ -234,7 +234,7 @@ class TasksRepository constructor(
 
     override suspend fun getUserStoryTasks(storyId: Long) = withIO {
         handle404 {
-            taigaApi.getTasks(userStory = storyId, project = session.currentProjectId.last())
+            taigaApi.getTasks(userStory = storyId, project = session.currentProjectId.value)
                 .map { it.toCommonTask(CommonTaskType.Task) }
         }
     }
@@ -243,7 +243,7 @@ class TasksRepository constructor(
         handle404 {
             taigaApi.getIssues(
                     page = page,
-                    project = session.currentProjectId.last(),
+                    project = session.currentProjectId.value,
                     query = filters.query,
                     assignedIds = filters.assignees.commaString(),
                     ownerIds = filters.createdBy.commaString(),
@@ -280,15 +280,15 @@ class TasksRepository constructor(
         taigaApi.getCommonTaskComments(CommonTaskPathSingular(type), commonTaskId)
             .sortedBy { it.postDateTime }
             .filter { it.deleteDate == null }
-            .map { it.also { it.canDelete = it.author.id == session.currentUserId.last() } }
+            .map { it.also { it.canDelete = it.author.id == session.currentUserId.value } }
     }
 
     override suspend fun getAttachments(commonTaskId: Long, type: CommonTaskType) = withIO {
-        taigaApi.getCommonTaskAttachments(CommonTaskPathPlural(type), commonTaskId, session.currentProjectId.last())
+        taigaApi.getCommonTaskAttachments(CommonTaskPathPlural(type), commonTaskId, session.currentProjectId.value)
     }
 
     override suspend fun getCustomFields(commonTaskId: Long, type: CommonTaskType) = withIO {
-        val attributes = async { taigaApi.getCustomAttributes(CommonTaskPathSingular(type), session.currentProjectId.last()) }
+        val attributes = async { taigaApi.getCustomAttributes(CommonTaskPathSingular(type), session.currentProjectId.value) }
         val values = taigaApi.getCustomAttributesValues(CommonTaskPathPlural(type), commonTaskId)
 
         CustomFields(
@@ -321,7 +321,7 @@ class TasksRepository constructor(
     }
 
     override suspend fun getSwimlanes() = withIO {
-        taigaApi.getSwimlanes(session.currentProjectId.last())
+        taigaApi.getSwimlanes(session.currentProjectId.value)
     }
 
     private fun transformTaskTypeForCopyLink(commonTaskType: CommonTaskType) = when (commonTaskType) {
@@ -367,7 +367,7 @@ class TasksRepository constructor(
             type = type?.let { id -> filters.types.find { it.id == id } }?.toStatus(StatusType.Type),
             severity = severity?.let { id -> filters.severities.find { it.id == id } }?.toStatus(StatusType.Severity),
             priority = priority?.let { id -> filters.priorities.find { it.id == id } }?.toStatus(StatusType.Priority),
-            url =  "${session.server.last()}/project/${project_extra_info.slug}/${transformTaskTypeForCopyLink(commonTaskType)}/$ref",
+            url =  "${session.server.value}/project/${project_extra_info.slug}/${transformTaskTypeForCopyLink(commonTaskType)}/$ref",
             blockedNote = blocked_note.takeIf { is_blocked }
         )
     }
@@ -541,17 +541,17 @@ class TasksRepository constructor(
     ) = withIO {
         when (commonTaskType) {
             CommonTaskType.Task -> taigaApi.createTask(
-                createTaskRequest = CreateTaskRequest(session.currentProjectId.last(), title, description, sprintId, parentId)
+                createTaskRequest = CreateTaskRequest(session.currentProjectId.value, title, description, sprintId, parentId)
             )
             CommonTaskType.Issue -> taigaApi.createIssue(
-                createIssueRequest = CreateIssueRequest(session.currentProjectId.last(), title, description, sprintId)
+                createIssueRequest = CreateIssueRequest(session.currentProjectId.value, title, description, sprintId)
             )
             CommonTaskType.UserStory -> taigaApi.createUserstory(
-                createUserStoryRequest = CreateUserStoryRequest(session.currentProjectId.last(), title, description, statusId, swimlaneId)
+                createUserStoryRequest = CreateUserStoryRequest(session.currentProjectId.value, title, description, statusId, swimlaneId)
             )
             else -> taigaApi.createCommonTask(
                 taskPath = CommonTaskPathPlural(commonTaskType),
-                createRequest = CreateCommonTaskRequest(session.currentProjectId.last(), title, description, statusId)
+                createRequest = CreateCommonTaskRequest(session.currentProjectId.value, title, description, statusId)
             )
         }.toCommonTask(commonTaskType)
     }
@@ -572,9 +572,9 @@ class TasksRepository constructor(
         taigaApi.promoteCommonTaskToUserStory(
             taskPath = CommonTaskPathPlural(commonTaskType),
             taskId = commonTaskId,
-            promoteToUserStoryRequest = PromoteToUserStoryRequest(session.currentProjectId.last())
+            promoteToUserStoryRequest = PromoteToUserStoryRequest(session.currentProjectId.value)
         ).first()
-         .let { taigaApi.getUserStoryByRef(session.currentProjectId.last(), it).toCommonTask(CommonTaskType.UserStory) }
+         .let { taigaApi.getUserStoryByRef(session.currentProjectId.value, it).toCommonTask(CommonTaskType.UserStory) }
     }
 
     @OptIn(InternalAPI::class)
@@ -583,7 +583,7 @@ class TasksRepository constructor(
         val fileByteArray = ByteArray(fileSize) //create an array of the correct size.
         inputStream.readFully(fileByteArray, 0, fileSize)
 
-        val projectId = session.currentProjectId.last()
+        val projectId = session.currentProjectId.value
 
         val multiPartContent = MultiPartFormDataContent(
             formData {

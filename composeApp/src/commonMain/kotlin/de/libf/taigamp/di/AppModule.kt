@@ -3,6 +3,7 @@ package de.libf.taigamp.di
 //import org.koin.compose.viewmodel.dsl.viewModelOf
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.libf.taigamp.data.api.TaigaApi
+import de.libf.taigamp.data.api.TaigaKtorClient
 import de.libf.taigamp.data.api.TestApi
 import de.libf.taigamp.data.api.createTaigaApi
 import de.libf.taigamp.data.repositories.AuthRepository
@@ -37,23 +38,24 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
+//TODO
 suspend fun getApiUrl(session: Session) = // for compatibility with older app versions
-    if (!session.server.last().run { startsWith("https://") || startsWith("http://") }) {
+    if (!session.server.value.run { startsWith("https://") || startsWith("http://") }) {
         "https://"
     } else {
         ""
-    } + "${session.server.last()}/${TaigaApi.API_PREFIX}"
+    } + "${session.server.value}/${TaigaApi.API_PREFIX}/"
 
 internal const val dataStoreFileName = "taigamp.preferences_pb"
 
 val dataModule = module {
     single<TaigaApi> {
-        TestApi()
-//        Ktorfit.Builder()
+//        TaigaKtorClient(get())
+        Ktorfit.Builder()
 //            .baseUrl("http://127.0.0.1:9999/${TaigaApi.API_PREFIX}/")
-//            .httpClient(get<HttpClient>())
-//            .build()
-//            .createTaigaApi()
+            .httpClient(get<HttpClient>())
+            .build()
+            .createTaigaApi()
     }
 
     single { Session(get()) }

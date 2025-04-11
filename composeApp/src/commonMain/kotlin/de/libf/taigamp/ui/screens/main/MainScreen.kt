@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -49,6 +50,7 @@ import de.libf.taigamp.domain.entities.CommonTaskType
 import de.libf.taigamp.state.ThemeSetting
 import de.libf.taigamp.ui.components.appbars.AppBarWithBackButton
 import de.libf.taigamp.ui.components.containers.ContainerBox
+import de.libf.taigamp.ui.components.dialogs.LoadingDialog
 import de.libf.taigamp.ui.screens.commontask.CommonTaskScreen
 import de.libf.taigamp.ui.screens.createtask.CreateTaskScreen
 import de.libf.taigamp.ui.screens.dashboard.DashboardScreen
@@ -66,10 +68,12 @@ import de.libf.taigamp.ui.screens.wiki.createpage.WikiCreatePageScreen
 import de.libf.taigamp.ui.screens.wiki.list.WikiListScreen
 import de.libf.taigamp.ui.screens.wiki.page.WikiPageScreen
 import de.libf.taigamp.ui.theme.TaigaMobileTheme
-import de.libf.taigamp.ui.utils.navigationBarsHeight
+
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -154,9 +158,7 @@ fun MainScreen(
                         // hide bottom bar for other screens
                         if (currentRoute !in routes) return@Scaffold
 
-                        NavigationBar(
-                            modifier = Modifier.navigationBarsHeight(70.dp)
-                        ) {
+                        NavigationBar {
                             items.forEach { screen ->
                                 NavigationBarItem(
                                     modifier = Modifier.navigationBarsPadding()
@@ -248,198 +250,216 @@ fun MainScreenContent(
     val showMessage: (StringResource) -> Unit = { message ->
 //        val strMessage = context.getString(message)
         scope.launch {
-            scaffoldState.snackbarHostState.showSnackbar(message.toString())
+            scaffoldState.snackbarHostState.showSnackbar(getString(message))
         }
     }
 
-    val isLogged by viewModel.isLogged.collectAsState()
+    val isLogged by viewModel.isLogged.collectAsStateWithLifecycle()
     val isProjectSelected by viewModel.isProjectSelected.collectAsState()
 
-    Surface(
-        modifier = Modifier.fillMaxSize().padding(paddingValues),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        NavHost(
-            navController = navController,
-            startDestination = remember { if (isLogged) Routes.dashboard else Routes.login }
+    if(isLogged == null) {
+        LoadingDialog()
+    } else {
+        Surface(
+            modifier = Modifier.fillMaxSize().padding(paddingValues),
+            color = MaterialTheme.colorScheme.background
         ) {
-            composable(Routes.login) {
-                LoginScreen(
-                    navController = navController,
-                    showMessage = showMessage
-                )
-            }
+            NavHost(
+                navController = navController,
+                startDestination = remember { if (isLogged == true) Routes.dashboard else Routes.login }
+            ) {
+                composable(Routes.login) {
+                    LoginScreen(
+                        navController = navController,
+                        showMessage = showMessage
+                    )
+                }
 
-            // start screen
-            composable(Routes.dashboard) {
-                DashboardScreen(
-                    navController = navController,
-                    showMessage = showMessage
-                )
-                // user must select project first
-                LaunchedEffect(Unit) {
-                    if (!isProjectSelected) {
-                        navController.navigate(Routes.projectsSelector)
+                // start screen
+                composable(Routes.dashboard) {
+                    DashboardScreen(
+                        navController = navController,
+                        showMessage = showMessage
+                    )
+                    // user must select project first
+                    LaunchedEffect(Unit) {
+                        if (!isProjectSelected) {
+                            navController.navigate(Routes.projectsSelector)
+                        }
                     }
                 }
-            }
 
-            composable(Routes.scrum) {
-                ScrumScreen(
-                    navController = navController,
-                    showMessage = showMessage
-                )
-            }
+                composable(Routes.scrum) {
+                    ScrumScreen(
+                        navController = navController,
+                        showMessage = showMessage
+                    )
+                }
 
-            composable(Routes.epics) {
-                EpicsScreen(
-                    navController = navController,
-                    showMessage = showMessage
-                )
-            }
+                composable(Routes.epics) {
+                    EpicsScreen(
+                        navController = navController,
+                        showMessage = showMessage
+                    )
+                }
 
-            composable(Routes.issues) {
-                IssuesScreen(
-                    navController = navController,
-                    showMessage = showMessage
-                )
-            }
+                composable(Routes.issues) {
+                    IssuesScreen(
+                        navController = navController,
+                        showMessage = showMessage
+                    )
+                }
 
-            composable(Routes.more) {
-                MoreScreen(
-                    navController = navController
-                )
-            }
+                composable(Routes.more) {
+                    MoreScreen(
+                        navController = navController
+                    )
+                }
 
-            composable(Routes.team) {
-                TeamScreen(
-                    navController = navController,
-                    showMessage = showMessage
-                )
-            }
+                composable(Routes.team) {
+                    TeamScreen(
+                        navController = navController,
+                        showMessage = showMessage
+                    )
+                }
 
-            composable(Routes.kanban) {
-                KanbanScreen(
-                    navController = navController,
-                    showMessage = showMessage
-                )
-            }
+                composable(Routes.kanban) {
+                    KanbanScreen(
+                        navController = navController,
+                        showMessage = showMessage
+                    )
+                }
 
-            composable(Routes.wiki_selector) {
-                WikiListScreen(
-                    navController = navController,
-                    showMessage = showMessage
-                )
-            }
+                composable(Routes.wiki_selector) {
+                    WikiListScreen(
+                        navController = navController,
+                        showMessage = showMessage
+                    )
+                }
 
-            composable(Routes.wiki_create_page) {
-                WikiCreatePageScreen(
-                    navController = navController,
-                    showMessage = showMessage
-                )
-            }
+                composable(Routes.wiki_create_page) {
+                    WikiCreatePageScreen(
+                        navController = navController,
+                        showMessage = showMessage
+                    )
+                }
 
-            composable(
-                "${Routes.wiki_page}/{${Routes.Arguments.wikiSlug}}",
-                arguments = listOf(
-                    navArgument(Routes.Arguments.wikiSlug) { type = NavType.StringType }
-                )
-            ) {
-                WikiPageScreen(
-                    slug = it.arguments!!.getString(Routes.Arguments.wikiSlug).orEmpty(),
-                    navController = navController,
-                    showMessage = showMessage
-                )
-            }
+                composable(
+                    "${Routes.wiki_page}/{${Routes.Arguments.wikiSlug}}",
+                    arguments = listOf(
+                        navArgument(Routes.Arguments.wikiSlug) { type = NavType.StringType }
+                    )
+                ) {
+                    WikiPageScreen(
+                        slug = it.arguments!!.getString(Routes.Arguments.wikiSlug).orEmpty(),
+                        navController = navController,
+                        showMessage = showMessage
+                    )
+                }
 
-            composable(Routes.settings) {
-                SettingsScreen(
-                    navController = navController,
-                    showMessage = showMessage
-                )
-            }
+                composable(Routes.settings) {
+                    SettingsScreen(
+                        navController = navController,
+                        showMessage = showMessage
+                    )
+                }
 
-            composable(Routes.projectsSelector) {
-                ProjectSelectorScreen(
-                    navController = navController,
-                    showMessage = showMessage
-                )
-            }
+                composable(Routes.projectsSelector) {
+                    ProjectSelectorScreen(
+                        navController = navController,
+                        showMessage = showMessage
+                    )
+                }
 
-            composable(
-                "${Routes.sprint}/{${Routes.Arguments.sprintId}}",
-                arguments = listOf(
-                    navArgument(Routes.Arguments.sprintId) { type = NavType.LongType }
-                )
-            ) {
-                SprintScreen(
-                    navController = navController,
-                    sprintId = it.arguments!!.getLong(Routes.Arguments.sprintId),
-                    showMessage = showMessage
-                )
-            }
+                composable(
+                    "${Routes.sprint}/{${Routes.Arguments.sprintId}}",
+                    arguments = listOf(
+                        navArgument(Routes.Arguments.sprintId) { type = NavType.LongType }
+                    )
+                ) {
+                    SprintScreen(
+                        navController = navController,
+                        sprintId = it.arguments!!.getLong(Routes.Arguments.sprintId),
+                        showMessage = showMessage
+                    )
+                }
 
-            composable(
-                "${Routes.profile}/{${Routes.Arguments.userId}}",
-                arguments = listOf(
-                    navArgument(Routes.Arguments.userId) { type = NavType.LongType }
-                )
-            ) {
-                ProfileScreen(
-                    navController = navController,
-                    showMessage = showMessage,
-                    userId = it.arguments!!.getLong(Routes.Arguments.userId),
-                )
-            }
+                composable(
+                    "${Routes.profile}/{${Routes.Arguments.userId}}",
+                    arguments = listOf(
+                        navArgument(Routes.Arguments.userId) { type = NavType.LongType }
+                    )
+                ) {
+                    ProfileScreen(
+                        navController = navController,
+                        showMessage = showMessage,
+                        userId = it.arguments!!.getLong(Routes.Arguments.userId),
+                    )
+                }
 
-            composable(
-                Routes.Arguments.run { "${Routes.commonTask}/{$commonTaskId}/{$commonTaskType}/{$ref}" },
-                arguments = listOf(
-                    navArgument(Routes.Arguments.commonTaskType) { type = NavType.StringType },
-                    navArgument(Routes.Arguments.commonTaskId) { type = NavType.LongType },
-                    navArgument(Routes.Arguments.ref) { type = NavType.IntType },
-                )
-            ) {
-                CommonTaskScreen(
-                    navController = navController,
-                    commonTaskId = it.arguments!!.getLong(Routes.Arguments.commonTaskId),
-                    commonTaskType = CommonTaskType.valueOf(it.arguments!!.getString(Routes.Arguments.commonTaskType, "")),
-                    ref = it.arguments!!.getInt(Routes.Arguments.ref),
-                    showMessage = showMessage
-                )
-            }
+                composable(
+                    Routes.Arguments.run { "${Routes.commonTask}/{$commonTaskId}/{$commonTaskType}/{$ref}" },
+                    arguments = listOf(
+                        navArgument(Routes.Arguments.commonTaskType) { type = NavType.StringType },
+                        navArgument(Routes.Arguments.commonTaskId) { type = NavType.LongType },
+                        navArgument(Routes.Arguments.ref) { type = NavType.IntType },
+                    )
+                ) {
+                    CommonTaskScreen(
+                        navController = navController,
+                        commonTaskId = it.arguments!!.getLong(Routes.Arguments.commonTaskId),
+                        commonTaskType = CommonTaskType.valueOf(
+                            it.arguments!!.getString(
+                                Routes.Arguments.commonTaskType,
+                                ""
+                            )
+                        ),
+                        ref = it.arguments!!.getInt(Routes.Arguments.ref),
+                        showMessage = showMessage
+                    )
+                }
 
-            composable(
-                Routes.Arguments.run {"${Routes.createTask}/{$commonTaskType}?$parentId={$parentId}&$sprintId={$sprintId}&$statusId={$statusId}&$swimlaneId={$swimlaneId}" },
-                arguments = listOf(
-                    navArgument(Routes.Arguments.commonTaskType) { type = NavType.StringType },
-                    navArgument(Routes.Arguments.parentId) {
-                        type = NavType.LongType
-                        defaultValue = -1L // long does not allow null values
-                    },
-                    navArgument(Routes.Arguments.sprintId) {
-                        type = NavType.LongType
-                        defaultValue = -1L
-                    },
-                    navArgument(Routes.Arguments.statusId) {
-                        type = NavType.LongType
-                        defaultValue = -1L
-                    },
-                    navArgument(Routes.Arguments.swimlaneId) {
-                        type = NavType.LongType
-                        defaultValue = -1L
-                    },
-                )
-            ) {
-                CreateTaskScreen(
-                    navController = navController,
-                    commonTaskType = CommonTaskType.valueOf(it.arguments!!.getString(Routes.Arguments.commonTaskType, "")),
-                    parentId = it.arguments!!.getLong(Routes.Arguments.parentId).takeIf { it >= 0 },
-                    sprintId = it.arguments!!.getLong(Routes.Arguments.sprintId).takeIf { it >= 0 },
-                    statusId = it.arguments!!.getLong(Routes.Arguments.statusId).takeIf { it >= 0 },
-                    swimlaneId = it.arguments!!.getLong(Routes.Arguments.swimlaneId).takeIf { it >= 0 },
-                    showMessage = showMessage
-                )
+                composable(
+                    Routes.Arguments.run { "${Routes.createTask}/{$commonTaskType}?$parentId={$parentId}&$sprintId={$sprintId}&$statusId={$statusId}&$swimlaneId={$swimlaneId}" },
+                    arguments = listOf(
+                        navArgument(Routes.Arguments.commonTaskType) { type = NavType.StringType },
+                        navArgument(Routes.Arguments.parentId) {
+                            type = NavType.LongType
+                            defaultValue = -1L // long does not allow null values
+                        },
+                        navArgument(Routes.Arguments.sprintId) {
+                            type = NavType.LongType
+                            defaultValue = -1L
+                        },
+                        navArgument(Routes.Arguments.statusId) {
+                            type = NavType.LongType
+                            defaultValue = -1L
+                        },
+                        navArgument(Routes.Arguments.swimlaneId) {
+                            type = NavType.LongType
+                            defaultValue = -1L
+                        },
+                    )
+                ) {
+                    CreateTaskScreen(
+                        navController = navController,
+                        commonTaskType = CommonTaskType.valueOf(
+                            it.arguments!!.getString(
+                                Routes.Arguments.commonTaskType,
+                                ""
+                            )
+                        ),
+                        parentId = it.arguments!!.getLong(Routes.Arguments.parentId)
+                            .takeIf { it >= 0 },
+                        sprintId = it.arguments!!.getLong(Routes.Arguments.sprintId)
+                            .takeIf { it >= 0 },
+                        statusId = it.arguments!!.getLong(Routes.Arguments.statusId)
+                            .takeIf { it >= 0 },
+                        swimlaneId = it.arguments!!.getLong(Routes.Arguments.swimlaneId)
+                            .takeIf { it >= 0 },
+                        showMessage = showMessage
+                    )
+                }
             }
         }
     }
@@ -463,7 +483,7 @@ fun MoreScreen(
             Icon(
                 painter = painterResource(iconId),
                 contentDescription = null,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.padding(horizontal = 16.dp).size(40.dp),
                 tint = MaterialTheme.colorScheme.outline
             )
 

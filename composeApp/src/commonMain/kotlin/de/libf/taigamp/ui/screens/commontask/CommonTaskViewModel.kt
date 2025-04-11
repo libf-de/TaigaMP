@@ -218,8 +218,8 @@ class CommonTaskViewModel() : ViewModel(), KoinComponent {
         }
     }
 
-    fun addAssignee(userId: Long? = null) = viewModelScope.launch { editAssignees(userId ?: session.currentUserId.last(), remove = false) }
-    fun removeAssignee(userId: Long? = null) = viewModelScope.launch { editAssignees(userId ?: session.currentUserId.last(), remove = true) }
+    fun addAssignee(userId: Long? = null) = viewModelScope.launch { editAssignees(userId ?: session.currentUserId.value, remove = false) }
+    fun removeAssignee(userId: Long? = null) = viewModelScope.launch { editAssignees(userId ?: session.currentUserId.value, remove = true) }
 
     // Edit watchers
 
@@ -241,8 +241,8 @@ class CommonTaskViewModel() : ViewModel(), KoinComponent {
         }
     }
 
-    fun addWatcher(userId: Long? = null) = viewModelScope.launch { editWatchers(userId ?: session.currentUserId.last(), remove = false) }
-    fun removeWatcher(userId: Long? = null) = viewModelScope.launch { editWatchers(userId ?: session.currentUserId.last(), remove = true) }
+    fun addWatcher(userId: Long? = null) = viewModelScope.launch { editWatchers(userId ?: session.currentUserId.value, remove = false) }
+    fun removeWatcher(userId: Long? = null) = viewModelScope.launch { editWatchers(userId ?: session.currentUserId.value, remove = true) }
 
     // Tags
     val tagsSearched = MutableStateFlow(emptyList<Tag>())

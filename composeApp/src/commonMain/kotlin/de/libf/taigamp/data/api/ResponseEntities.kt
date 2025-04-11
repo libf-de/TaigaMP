@@ -1,5 +1,6 @@
 package de.libf.taigamp.data.api
 
+import de.libf.taigamp.domain.LocalDateTimeSerializer
 import kotlinx.serialization.Serializable
 import de.libf.taigamp.domain.entities.*
 import kotlinx.datetime.LocalDate
@@ -83,7 +84,7 @@ data class FiltersDataResponse(
 data class CommonTaskResponse(
     val id: Long,
     val subject: String,
-    val created_date: LocalDateTime,
+    @Serializable(with = LocalDateTimeSerializer::class) val created_date: LocalDateTime,
     val status: Long,
     val ref: Int,
     val assigned_to_extra_info: User?,

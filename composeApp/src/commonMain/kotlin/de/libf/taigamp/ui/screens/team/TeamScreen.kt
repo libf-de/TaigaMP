@@ -19,7 +19,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import de.libf.taigamp.domain.entities.TeamMember
 import de.libf.taigamp.ui.utils.LoadingResult
 import de.libf.taigamp.ui.components.appbars.ClickableAppBar
@@ -29,9 +33,11 @@ import de.libf.taigamp.ui.screens.main.Routes
 import de.libf.taigamp.ui.theme.TaigaMobileTheme
 import de.libf.taigamp.ui.theme.mainHorizontalScreenPadding
 import de.libf.taigamp.ui.utils.navigateToProfileScreen
-import de.libf.taigamp.ui.utils.navigationBarsHeight
+
 import de.libf.taigamp.ui.utils.subscribeOnError
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import taigamultiplatform.composeapp.generated.resources.Res
@@ -108,13 +114,14 @@ fun TeamScreenContent(
                 }
 
                 item {
-                    Spacer(Modifier.navigationBarsHeight(8.dp))
+                    Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars).padding(bottom = 8.dp))
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun TeamMemberItem(
     teamMember: TeamMember,
@@ -128,14 +135,13 @@ private fun TeamMemberItem(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.weight(0.6f)
     ) {
-        Image(
-            painter = rememberAsyncImagePainter(
-                model = teamMember.avatarUrl ?: Res.drawable.default_avatar,
-//                builder = {
-//                    error(R.drawable.default_avatar)
-//                    crossfade(true)
-//                },
-            ),
+        AsyncImage(
+            model = ImageRequest.Builder(LocalPlatformContext.current)
+                .data(teamMember.avatarUrl ?: Res.getUri("drawable/default_avatar.png"))
+                .crossfade(true)
+                .build(),
+            placeholder = painterResource(Res.drawable.default_avatar),
+            error = painterResource(Res.drawable.default_avatar),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier

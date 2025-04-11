@@ -25,7 +25,11 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import de.libf.taigamp.domain.entities.*
 import de.libf.taigamp.ui.components.buttons.PlusButton
 import de.libf.taigamp.ui.components.lists.CommonTaskItem
@@ -35,11 +39,13 @@ import de.libf.taigamp.ui.theme.cardShadowElevation
 import de.libf.taigamp.ui.theme.kanbanBoardTonalElevation
 import de.libf.taigamp.ui.utils.NavigateToTask
 import de.libf.taigamp.ui.utils.clickableUnindicated
-import de.libf.taigamp.ui.utils.navigationBarsHeight
+
 import de.libf.taigamp.ui.utils.now
 import de.libf.taigamp.ui.utils.toColor
 import kotlinx.datetime.LocalDateTime
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import taigamultiplatform.composeapp.generated.resources.Res
@@ -197,7 +203,7 @@ fun SprintKanban(
         }
 
         item {
-            Spacer(Modifier.navigationBarsHeight(8.dp))
+            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars).padding(bottom = 8.dp))
         }
     }
 }
@@ -358,6 +364,7 @@ private fun Cell(
     content = content
 )
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun TaskItem(
     task: CommonTask,
@@ -397,14 +404,13 @@ private fun TaskItem(
         }
 
         task.assignee?.let {
-            Image(
-                painter = rememberAsyncImagePainter(
-                    model = it.avatarUrl ?: Res.drawable.default_avatar,
-//                    builder = {
-//                        error(R.drawable.default_avatar)
-//                        crossfade(true)
-//                    }
-                ),
+            AsyncImage(
+                model = ImageRequest.Builder(LocalPlatformContext.current)
+                    .data(it.avatarUrl ?: Res.getUri("drawable/default_avatar.png"))
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(Res.drawable.default_avatar),
+                error = painterResource(Res.drawable.default_avatar),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(32.dp)

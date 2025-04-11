@@ -22,7 +22,7 @@ class ProjectsRepository constructor(
     }
 
     override suspend fun getMyProjects() = withIO {
-        taigaApi.getProjects(memberId = session.currentUserId.last())
+        taigaApi.getProjects(memberId = session.currentUserId.value)
     }
 
     override suspend fun getUserProjects(userId: Long) = withIO {

@@ -19,6 +19,10 @@ value class CommonTaskPathPlural private constructor(val path: String) {
             CommonTaskType.Issue -> "issues"
         }
     )
+
+    override fun toString(): String {
+        return path
+    }
 }
 
 // singular form
@@ -32,4 +36,8 @@ value class CommonTaskPathSingular private constructor(val path: String) {
             CommonTaskType.Issue -> "issue"
         }
     )
+
+    override fun toString(): String {
+        return path
+    }
 }

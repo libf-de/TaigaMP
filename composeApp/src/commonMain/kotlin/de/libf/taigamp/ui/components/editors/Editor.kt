@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import de.libf.taigamp.ui.components.appbars.AppBarWithBackButton
 import de.libf.taigamp.ui.theme.TaigaMobileTheme
 import de.libf.taigamp.ui.theme.mainHorizontalScreenPadding
-import de.libf.taigamp.ui.utils.navigationBarsHeight
 import de.libf.taigamp.ui.utils.onBackPressed
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -93,7 +92,7 @@ fun Editor(
             onValueChange = { descriptionInput = it },
         )
 
-        Spacer(Modifier.navigationBarsHeight(8.dp))
+        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars).padding(bottom = 8.dp))
     }
 
 }

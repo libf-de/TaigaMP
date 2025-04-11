@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
@@ -24,11 +25,18 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import de.libf.taigamp.domain.entities.Project
 import de.libf.taigamp.ui.theme.mainHorizontalScreenPadding
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import taigamultiplatform.composeapp.generated.resources.Res
@@ -41,6 +49,7 @@ import taigamultiplatform.composeapp.generated.resources.project_admin
 import taigamultiplatform.composeapp.generated.resources.project_member
 import taigamultiplatform.composeapp.generated.resources.project_owner
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ProjectCard(
     project: Project,
@@ -70,14 +79,13 @@ fun ProjectCard(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = rememberAsyncImagePainter(
-                    model = project.avatarUrl ?: Res.drawable.default_avatar,
-//                    builder = {
-//                        error(R.drawable.default_avatar)
-//                        crossfade(true)
-//                    },
-                ),
+            AsyncImage(
+                model = ImageRequest.Builder(LocalPlatformContext.current)
+                    .data(project.avatarUrl ?: Res.getUri("drawable/default_avatar.png"))
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(Res.drawable.default_avatar),
+                error = painterResource(Res.drawable.default_avatar),
                 contentDescription = null,
                 modifier = Modifier.size(46.dp)
             )

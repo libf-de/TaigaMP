@@ -20,8 +20,16 @@ class Session(private val prefs: DataStore<Preferences>) {
     //private val sharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
-    val refreshToken = prefs.data.map { it[REFRESH_TOKEN_KEY] ?: "" }
-    val token = prefs.data.map { it[TOKEN_KEY] ?: "" }
+    val refreshToken = prefs.data.map { it[REFRESH_TOKEN_KEY] ?: "" }.stateIn(
+        scope = scope,
+        started = SharingStarted.Eagerly,
+        initialValue = ""
+    )
+    val token = prefs.data.map { it[TOKEN_KEY] ?: "" }.stateIn(
+        scope = scope,
+        started = SharingStarted.Eagerly,
+        initialValue = ""
+    )
 
     //private val _refreshToken = MutableStateFlow(sharedPreferences.getString(REFRESH_TOKEN_KEY, "").orEmpty())
     //private val _token = MutableStateFlow(sharedPreferences.getString(TOKEN_KEY, "").orEmpty())
@@ -31,8 +39,8 @@ class Session(private val prefs: DataStore<Preferences>) {
 
     suspend fun changeAuthCredentials(token: String, refreshToken: String) {
         prefs.edit {
-            it[TOKEN_KEY] = token;
-            it[REFRESH_TOKEN_KEY] = refreshToken;
+            it[TOKEN_KEY] = token
+            it[REFRESH_TOKEN_KEY] = refreshToken
         }
         //_token.value = token
         //_refreshToken.value = refreshToken
@@ -40,14 +48,22 @@ class Session(private val prefs: DataStore<Preferences>) {
 
     //private val _server = MutableStateFlow(sharedPreferences.getString(SERVER_KEY, "").orEmpty())
     //val server: StateFlow<String> = _server
-    val server = prefs.data.map { it[SERVER_KEY] ?: "" }
+    val server = prefs.data.map { it[SERVER_KEY] ?: "" }.stateIn(
+        scope = scope,
+        started = SharingStarted.Eagerly,
+        initialValue = ""
+    )
     suspend fun changeServer(value: String) {
         prefs.edit { it[SERVER_KEY] = value; };
     }
 
     //private val _currentUserId = MutableStateFlow(sharedPreferences.getLong(USER_ID_KEY, -1))
     //val currentUserId: StateFlow<Long> = _currentUserId
-    val currentUserId = prefs.data.map { it[USER_ID_KEY] ?: -1 }
+    val currentUserId = prefs.data.map { it[USER_ID_KEY] ?: -1 }.stateIn(
+        scope = scope,
+        started = SharingStarted.Eagerly,
+        initialValue = -1
+    )
     suspend fun changeCurrentUserId(value: Long) {
         prefs.edit { it[USER_ID_KEY] = value; };
     }
@@ -57,8 +73,16 @@ class Session(private val prefs: DataStore<Preferences>) {
 
     //val currentProjectId: StateFlow<Long> = _currentProjectId
     //val currentProjectName: StateFlow<String> = _currentProjectName
-    val currentProjectId = prefs.data.map { it[PROJECT_ID_KEY] ?: -1 }
-    val currentProjectName = prefs.data.map { it[PROJECT_NAME_KEY] ?: "" }
+    val currentProjectId = prefs.data.map { it[PROJECT_ID_KEY] ?: -1 }.stateIn(
+        scope = scope,
+        started = SharingStarted.Eagerly,
+        initialValue = -1
+    )
+    val currentProjectName = prefs.data.map { it[PROJECT_NAME_KEY] ?: "" }.stateIn(
+        scope = scope,
+        started = SharingStarted.Eagerly,
+        initialValue = ""
+    )
 
     suspend fun changeCurrentProject(id: Long, name: String) {
         prefs.edit {
@@ -71,18 +95,23 @@ class Session(private val prefs: DataStore<Preferences>) {
 
     private fun checkLogged(token: String, refresh: String) = listOf(token, refresh).all { it.isNotEmpty() }
     val isLogged = combine(token, refreshToken, ::checkLogged)
-        .stateIn(scope, SharingStarted.Eagerly, initialValue = false)
+        .stateIn(scope, SharingStarted.Eagerly, initialValue = null)
 
     private fun checkProjectSelected(id: Long) = id >= 0
     val isProjectSelected = currentProjectId.map(::checkProjectSelected)
-        .stateIn(scope, SharingStarted.Eagerly, initialValue = false)
+        .stateIn(scope, SharingStarted.Eagerly, initialValue = checkProjectSelected(currentProjectId.value))
 
 
     // Filters
-
+//    private fun getFiltersOrEmpty(key: String) = sharedPreferences.getString(key, null)?.takeIf { it.isNotBlank() }?.let { filtersJsonAdapter.fromJson(it) } ?: FiltersData()
 //    private val _scrumFilters = MutableStateFlow(getFiltersOrEmpty(FILTERS_SCRUM))
-    val scrumFilters: Flow<FiltersData> = prefs.data
+    val scrumFilters = prefs.data
         .map { it[FILTERS_SCRUM]?.let { s -> Json.decodeFromString(s) } ?: FiltersData() }
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.Eagerly,
+            initialValue = FiltersData()
+        )
 
     suspend fun changeScrumFilters(filters: FiltersData) {
         prefs.edit {
@@ -92,16 +121,27 @@ class Session(private val prefs: DataStore<Preferences>) {
 
 //    private val _epicsFilters = MutableStateFlow(getFiltersOrEmpty(FILTERS_EPICS))
 //    val epicsFilters: StateFlow<FiltersData> = _epicsFilters
-    val epicsFilters: Flow<FiltersData> = prefs.data
+    val epicsFilters = prefs.data
         .map { it[FILTERS_EPICS]?.let { s -> Json.decodeFromString(s) } ?: FiltersData() }
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.Eagerly,
+            initialValue = FiltersData()
+        )
     suspend fun changeEpicsFilters(filters: FiltersData) {
         prefs.edit {
             it[FILTERS_EPICS] = Json.encodeToString(filters);
         }
     }
 
-    val issuesFilters: Flow<FiltersData> = prefs.data
+    val issuesFilters = prefs.data
         .map { it[FILTERS_ISSUES]?.let { s -> Json.decodeFromString(s) } ?: FiltersData() }
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.Eagerly,
+            initialValue = FiltersData()
+        )
+
     suspend fun changeIssuesFilters(filters: FiltersData) {
         prefs.edit {
             it[FILTERS_ISSUES] = Json.encodeToString(filters)

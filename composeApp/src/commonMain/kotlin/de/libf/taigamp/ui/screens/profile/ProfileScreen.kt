@@ -6,10 +6,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -26,7 +30,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import de.libf.taigamp.domain.entities.Project
 import de.libf.taigamp.domain.entities.Stats
 import de.libf.taigamp.domain.entities.User
@@ -35,9 +43,11 @@ import de.libf.taigamp.ui.components.lists.ProjectCard
 import de.libf.taigamp.ui.components.loaders.CircularLoader
 import de.libf.taigamp.ui.utils.ErrorResult
 import de.libf.taigamp.ui.utils.LoadingResult
-import de.libf.taigamp.ui.utils.navigationBarsHeight
+
 import de.libf.taigamp.ui.utils.subscribeOnError
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import taigamultiplatform.composeapp.generated.resources.Res
@@ -79,6 +89,7 @@ fun ProfileScreen(
     )
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ProfileScreenContent(
     navigateBack: () -> Unit = {},
@@ -109,14 +120,13 @@ fun ProfileScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        model = currentUser?.avatarUrl ?: Res.drawable.default_avatar,
-//                        builder = {
-//                            error(R.drawable.default_avatar)
-//                            crossfade(true)
-//                        },
-                    ),
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalPlatformContext.current)
+                        .data(currentUser?.avatarUrl ?: Res.getUri("drawable/default_avatar.png"))
+                        .crossfade(true)
+                        .build(),
+                    placeholder = painterResource(Res.drawable.default_avatar),
+                    error = painterResource(Res.drawable.default_avatar),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -189,7 +199,7 @@ fun ProfileScreenContent(
             }
 
             item {
-                Spacer(Modifier.navigationBarsHeight(8.dp))
+                Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars).padding(bottom = 8.dp))
             }
         }
     }

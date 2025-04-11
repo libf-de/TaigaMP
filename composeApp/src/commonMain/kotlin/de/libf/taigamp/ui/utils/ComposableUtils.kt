@@ -140,6 +140,6 @@ fun String.isValidUrl(): Boolean {
     return urlRegex.matches(this)
 }
 
-fun Modifier.Companion.navigationBarsHeight(dp: Dp): Modifier {
-    return this.size(width = 0.dp, height = dp)
-}
+//fun Modifier.Companion.navigationBarsHeight(dp: Dp): Modifier {
+//    return this.size(width = 128.dp, height = dp)
+//}

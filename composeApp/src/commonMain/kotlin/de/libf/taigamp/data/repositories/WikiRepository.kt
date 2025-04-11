@@ -22,13 +22,13 @@ class WikiRepository constructor(
 ) : IWikiRepository {
     override suspend fun getProjectWikiPages() = withIO {
         taigaApi.getProjectWikiPages(
-            projectId = session.currentProjectId.last()
+            projectId = session.currentProjectId.value
         )
     }
 
     override suspend fun getProjectWikiPageBySlug(slug: String) = withIO {
         taigaApi.getProjectWikiPageBySlug(
-            projectId = session.currentProjectId.last(),
+            projectId = session.currentProjectId.value,
             slug = slug
         )
     }
@@ -50,7 +50,7 @@ class WikiRepository constructor(
     override suspend fun getPageAttachments(pageId: Long): List<Attachment> = withIO {
         taigaApi.getPageAttachments(
             pageId = pageId,
-            projectId = session.currentProjectId.last()
+            projectId = session.currentProjectId.value
         )
     }
 
@@ -59,7 +59,7 @@ class WikiRepository constructor(
         val fileByteArray = ByteArray(fileSize) //create an array of the correct size.
         inputStream.readFully(fileByteArray, 0, fileSize)
 
-        val projectId = session.currentProjectId.last()
+        val projectId = session.currentProjectId.value
 
         val multiPartContent = MultiPartFormDataContent(
             formData {
@@ -87,7 +87,7 @@ class WikiRepository constructor(
 
     override suspend fun getWikiLinks() = withIO {
         taigaApi.getWikiLink(
-            projectId = session.currentProjectId.last()
+            projectId = session.currentProjectId.value
         )
     }
 
@@ -95,7 +95,7 @@ class WikiRepository constructor(
         taigaApi.createWikiLink(
             newWikiLinkRequest = NewWikiLinkRequest(
                 href = href,
-                project = session.currentProjectId.last(),
+                project = session.currentProjectId.value,
                 title = title
             )
         )

@@ -17,6 +17,7 @@ interface TaigaApi {
         const val baseUrlPlaceholder = "https://nothing.nothing"
     }
 
+    @Headers("Content-Type: application/json")
     @POST("auth")
     suspend fun auth(@Body authRequest: AuthRequest): AuthResponse
 
@@ -67,9 +68,11 @@ interface TaigaApi {
     @GET("milestones/{id}")
     suspend fun getSprint(@Path("id") sprintId: Long): SprintResponse
 
+    @Headers("Content-Type: application/json")
     @POST("milestones")
     suspend fun createSprint(@Body request: CreateSprintRequest)
 
+    @Headers("Content-Type: application/json")
     @PATCH("milestones/{id}")
     suspend fun editSprint(
         @Path("id") id: Long,
@@ -241,6 +244,7 @@ interface TaigaApi {
         @Path("id") id: Long
     ): CommonTaskResponse
 
+    @Headers("Content-Type: application/json")
     @PATCH("{taskPath}/{id}")
     suspend fun editCommonTask(
         @Path("taskPath") taskPath: CommonTaskPathPlural,
@@ -248,18 +252,22 @@ interface TaigaApi {
         @Body editCommonTaskRequest: EditCommonTaskRequest
     )
 
+    @Headers("Content-Type: application/json")
     @POST("{taskPath}")
     suspend fun createCommonTask(
         @Path("taskPath") taskPath: CommonTaskPathPlural,
         @Body createRequest: CreateCommonTaskRequest
     ): CommonTaskResponse
 
+    @Headers("Content-Type: application/json")
     @POST("tasks")
     suspend fun createTask(@Body createTaskRequest: CreateTaskRequest): CommonTaskResponse
 
+    @Headers("Content-Type: application/json")
     @POST("issues")
     suspend fun createIssue(@Body createIssueRequest: CreateIssueRequest): CommonTaskResponse
 
+    @Headers("Content-Type: application/json")
     @POST("userstories")
     suspend fun createUserstory(@Body createUserStoryRequest: CreateUserStoryRequest): CommonTaskResponse
 
@@ -269,6 +277,7 @@ interface TaigaApi {
         @Path("id") id: Long
     ): Response
 
+    @Headers("Content-Type: application/json")
     @POST("epics/{id}/related_userstories")
     suspend fun linkToEpic(
         @Path("id") epicId: Long,
@@ -281,6 +290,7 @@ interface TaigaApi {
         @Path("userStoryId") userStoryId: Long
     ): Response
 
+    @Headers("Content-Type: application/json")
     @POST("{taskPath}/{id}/promote_to_user_story")
     suspend fun promoteCommonTaskToUserStory(
         @Path("taskPath") taskPath: CommonTaskPathPlural,
@@ -290,6 +300,7 @@ interface TaigaApi {
 
     // Tasks comments
 
+    @Headers("Content-Type: application/json")
     @PATCH("{taskPath}/{id}")
     suspend fun createCommonTaskComment(
         @Path("taskPath") taskPath: CommonTaskPathPlural,
@@ -346,6 +357,7 @@ interface TaigaApi {
         @Path("id") taskId: Long
     ): CustomAttributesValuesResponse
 
+    @Headers("Content-Type: application/json")
     @PATCH("{taskPath}/custom-attributes-values/{id}")
     suspend fun editCustomAttributesValues(
         @Path("taskPath") taskPath: CommonTaskPathPlural,
@@ -372,6 +384,7 @@ interface TaigaApi {
         @Query("slug") slug: String
     ): WikiPage
 
+    @Headers("Content-Type: application/json")
     @PATCH("wiki/{id}")
     suspend fun editWikiPage(
         @Path("id") pageId: Long,
@@ -405,6 +418,7 @@ interface TaigaApi {
         @Query("project") projectId: Long
     ): List<WikiLink>
 
+    @Headers("Content-Type: application/json")
     @POST("wiki-links")
     suspend fun createWikiLink(
         @Body newWikiLinkRequest: NewWikiLinkRequest

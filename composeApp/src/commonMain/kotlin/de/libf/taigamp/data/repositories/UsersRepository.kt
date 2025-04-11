@@ -19,9 +19,9 @@ class UsersRepository constructor(
     override suspend fun getUserStats(userId: Long): Stats = withIO { taigaApi.getUserStats(userId) }
 
     override suspend fun getTeam() = withIO {
-        val team = async { taigaApi.getProject(session.currentProjectId.last()).members }
+        val team = async { taigaApi.getProject(session.currentProjectId.value).members }
         val stats = async {
-            taigaApi.getMemberStats(session.currentProjectId.last()).run {
+            taigaApi.getMemberStats(session.currentProjectId.value).run {
                 // calculating total number of points for each id
                 (closed_bugs.toList() + closed_tasks.toList() + created_bugs.toList() +
                     iocaine_tasks.toList() + wiki_changes.toList())
